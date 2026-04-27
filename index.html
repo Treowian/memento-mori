@@ -21,6 +21,11 @@
             --text-light: #6b777a;
             --border-color: #a4b0b3; 
             --accent-color: #8b5a2b;
+            
+            /* Nouvelles couleurs pour le Memento Mori */
+            --navy-blue: #1b2a47; /* Bleu marine doux pour le temps vécu */
+            --gold-milestone: #d4af37; /* Doré élégant pour les événements */
+            
             --font-main: 'Georgia', serif;
             --font-sans: system-ui, -apple-system, sans-serif;
         }
@@ -85,7 +90,6 @@
         .memento-quote { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
         .memento-actions { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; max-width: 800px; margin: 0 auto 0.5rem auto;}
         
-        /* 🔍 L'écran Radar pour la grille */
         .grid-hover-info { font-family: var(--font-sans); font-size: 0.9rem; color: var(--text-light); height: 1.5rem; display: flex; align-items: flex-end; transition: color 0.2s ease;}
         
         .grid-container { width: 100%; overflow-x: auto; display: flex; justify-content: center; }
@@ -93,25 +97,40 @@
         .life-grid.blurred { filter: blur(8px); opacity: 0.7; }
         .year-row { display: flex; gap: 2px; align-items: center; }
         
-        .week-box { width: 10px; height: 10px; border: 1px solid var(--border-color); background-color: transparent; box-sizing: border-box; transition: transform 0.1s; }
+        /* 🔵 Refonte en cercles marins */
+        .week-box { 
+            width: 10px; height: 10px; 
+            border-radius: 50%; /* Transforme les carrés en ronds */
+            border: 1px solid var(--border-color); 
+            background-color: transparent; 
+            box-sizing: border-box; 
+            transition: transform 0.1s; 
+        }
         .week-box:nth-child(26) { margin-right: 12px; }
         
-        /* Classes spécifiques passé/futur */
         .week-box.past { cursor: pointer; }
-        .week-box.past:hover { transform: scale(1.5); z-index: 10; border-color: var(--text-color); }
+        .week-box.past:hover { transform: scale(1.5); z-index: 10; border-color: var(--navy-blue); }
         .week-box.future { cursor: default; }
         
-        .week-box.lived { background-color: var(--text-color); border-color: var(--text-color); }
-        .week-box.milestone { background-color: var(--accent-color); border-color: var(--accent-color); box-shadow: 0 0 5px rgba(139, 90, 43, 0.5); }
+        .week-box.lived { background-color: var(--navy-blue); border-color: var(--navy-blue); }
+        .week-box.milestone { background-color: var(--gold-milestone); border-color: var(--gold-milestone); box-shadow: 0 0 5px rgba(212, 175, 55, 0.6); }
         
         .year-marker { width: 24px; font-family: var(--font-sans); font-size: 0.75rem; color: var(--text-color); margin-left: 8px; text-align: right; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: var(--bg-color); padding: 2rem; border-radius: 8px; width: 90%; max-width: 400px; border: 1px solid var(--border-color); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
-        .modal-date { font-family: var(--font-sans); color: var(--accent-color); font-weight: bold; margin-bottom: 1rem; display: block; text-transform: uppercase; font-size: 0.9rem;}
-        .modal-input { width: 100%; font-family: var(--font-main); font-size: 1.1rem; padding: 0.5rem; border: none; border-bottom: 2px solid var(--border-color); background: transparent; outline: none; margin-bottom: 1.5rem; color: var(--text-color);}
-        .modal-input:focus { border-bottom-color: var(--accent-color); }
-        .modal-buttons { display: flex; gap: 1rem; }
+        /* 🖼️ Modale repensée pour événements par date */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--bg-color); padding: 2rem; border-radius: 8px; width: 90%; max-width: 450px; border: 1px solid var(--border-color); box-shadow: 0 15px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column;}
+        .modal-title { font-family: var(--font-sans); color: var(--navy-blue); font-weight: bold; margin: 0 0 1.5rem 0; font-size: 1.2rem;}
+        .modal-input { width: 100%; font-family: var(--font-main); font-size: 1.1rem; padding: 0.5rem 0; border: none; border-bottom: 2px solid var(--border-color); background: transparent; outline: none; margin-bottom: 1.5rem; color: var(--text-color); box-sizing: border-box;}
+        .modal-input:focus { border-bottom-color: var(--gold-milestone); }
+        .modal-input[type="date"] { font-family: var(--font-sans); }
+        .modal-label { font-size: 0.85rem; color: var(--text-light); font-family: var(--font-sans); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 1px;}
+        .modal-buttons { display: flex; gap: 1rem; margin-bottom: 1rem;}
+        
+        .milestone-list-container { max-height: 150px; overflow-y: auto; border-top: 1px dashed var(--border-color); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.8rem;}
+        .milestone-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 0.8rem; border-radius: 4px; border-left: 3px solid var(--gold-milestone); font-family: var(--font-main);}
+        .btn-delete { background: none; border: none; color: #b33939; cursor: pointer; font-size: 1.2rem; padding: 0 0.5rem;}
+        .btn-delete:hover { opacity: 0.7; }
 
         .journal-actions { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto 2rem auto; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
         .journal-filters { display: flex; gap: 1rem; max-width: 600px; margin: 0 auto 2rem auto; justify-content: flex-start; }
@@ -133,7 +152,7 @@
             .grid-container { justify-content: center; }
             .year-row { gap: 1px; } 
             .life-grid { gap: 1px; } 
-            .week-box { width: 4px; height: 4px; border-radius: 0; }
+            .week-box { width: 5px; height: 5px; } /* Légèrement grossi sur mobile pour garder l'aspect rond */
             .week-box:nth-child(26) { margin-right: 4px; }
             .year-marker { font-size: 0.65rem; margin-left: 4px; width: 15px; }
             .journal-filters { flex-direction: column; gap: 0.5rem; }
@@ -150,7 +169,7 @@
             <input type="date" id="birthdate" required>
             <button class="btn-primary" onclick="startLocalMode()">Utiliser sans compte (Local)</button>
             <div class="github-section">
-                <p style="font-size: 0.9rem; color: var(--text-light); margin:0;">🔒 Optionnel : Synchroniser avec GitHub Gist pour ne jamais perdre tes données.</p>
+                <p style="font-size: 0.9rem; color: var(--text-light); margin:0;">🔒 Optionnel : Synchroniser avec GitHub Gist.</p>
                 <label>ID du Gist :</label> <input type="text" id="gist-id" placeholder="Ex: a1b2c3d4...">
                 <label>Token GitHub :</label> <input type="password" id="github-token" placeholder="ghp_...">
                 <button class="btn-secondary" id="btn-setup" onclick="startGithubMode()">Connecter GitHub</button>
@@ -202,8 +221,11 @@
                     <div class="memento-quote">« Ce n’est pas que nous avons peu de temps, c’est que nous en perdons beaucoup. » — Sénèque</div>
                 </div>
                 <div class="memento-actions">
-                    <div class="grid-hover-info" id="grid-hover-info">Survolez la grille pour explorer le temps...</div>
-                    <button class="nav-btn" onclick="togglePrivacy()">👁️ Masquer la grille</button>
+                    <div class="grid-hover-info" id="grid-hover-info">Survolez une bulle pour voir la date...</div>
+                    <div>
+                        <button class="nav-btn" style="margin-right: 1rem; color: var(--navy-blue); font-weight: bold;" onclick="openMilestoneModalWithDate(new Date().toISOString().split('T')[0])">+ Ajouter un événement</button>
+                        <button class="nav-btn" onclick="togglePrivacy()">👁️ Masquer</button>
+                    </div>
                 </div>
                 <div class="grid-container">
                     <div class="life-grid" id="life-grid"></div>
@@ -225,13 +247,21 @@
         
         <div id="milestone-modal" class="modal-overlay hidden">
             <div class="modal-content">
-                <span class="modal-date" id="milestone-date-label">Date</span>
-                <p style="margin-top:0; font-style:italic; font-size:0.9rem; color:var(--text-light);">Un moment marquant de ta vie ? Laisse vide pour supprimer.</p>
-                <input type="text" id="milestone-input" class="modal-input" placeholder="Ex: Premier voyage seul..." maxlength="50">
+                <h3 class="modal-title">Gérer les événements</h3>
+                
+                <label class="modal-label">Date</label>
+                <input type="date" id="milestone-date" class="modal-input" onchange="refreshMilestoneList()">
+                
+                <label class="modal-label">Souvenir marquant</label>
+                <input type="text" id="milestone-input" class="modal-input" placeholder="Ex: Obtention du diplôme..." maxlength="50">
+                
                 <div class="modal-buttons">
-                    <button class="btn-secondary" style="margin-top:0;" onclick="closeMilestoneModal()">Annuler</button>
-                    <button class="btn-primary" style="margin-top:0;" onclick="saveMilestone()">Sauvegarder</button>
+                    <button class="btn-secondary" style="margin-top:0;" onclick="closeMilestoneModal()">Fermer</button>
+                    <button class="btn-primary" style="margin-top:0;" onclick="saveMilestone()">Ajouter</button>
                 </div>
+                
+                <div id="milestone-list" class="milestone-list-container">
+                    </div>
             </div>
         </div>
 
@@ -258,14 +288,15 @@
         let currentDateOffset = 0;
         let calCurrentDate = new Date(); 
         
-        let currentMilestoneIndex = null;
+        // --- NOUVELLE GESTION DES JALONS PAR DATE EXACTE ---
+        window.currentMilestonesByWeek = {}; 
         
         const state = {
             mode: localStorage.getItem('mm_mode') || null,
             birthdate: localStorage.getItem('mm_birthdate'),
             gistId: localStorage.getItem('mm_gistId'),
             token: localStorage.getItem('mm_token'),
-            data: { milestones: {} } 
+            data: { milestones: {} } // Format: { "YYYY-MM-DD": ["Souvenir 1", "Souvenir 2"] }
         };
 
         const moisNoms = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
@@ -312,6 +343,7 @@
             const localData = localStorage.getItem('mm_journal_data');
             if (localData) { state.data = JSON.parse(localData); }
             if (!state.data.milestones) state.data.milestones = {};
+            migrateOldMilestones();
         }
 
         function saveLocalData() {
@@ -338,7 +370,7 @@
                 } else { state.data = { milestones: {} }; }
                 
                 if (!state.data.milestones) state.data.milestones = {};
-                
+                migrateOldMilestones();
                 launchApp();
             } catch (e) {
                 console.error(e);
@@ -347,10 +379,30 @@
                 localStorage.removeItem('mm_mode'); state.mode = null;
             }
         }
+        
+        // Migration au cas où on avait sauvegardé avec l'ancienne méthode (index de semaine)
+        function migrateOldMilestones() {
+            let migrated = false;
+            for (const key of Object.keys(state.data.milestones)) {
+                if (!key.includes('-')) { // Si c'est un chiffre (ancien index)
+                    const oldText = state.data.milestones[key];
+                    const birthDate = new Date(state.birthdate);
+                    const msPerWeek = 1000 * 60 * 60 * 24 * 7;
+                    const approxDate = new Date(birthDate.getTime() + (parseInt(key) * msPerWeek));
+                    const newKey = approxDate.toISOString().split('T')[0];
+                    
+                    if(!state.data.milestones[newKey]) state.data.milestones[newKey] = [];
+                    state.data.milestones[newKey].push(oldText);
+                    delete state.data.milestones[key];
+                    migrated = true;
+                }
+            }
+            if (migrated && state.mode === 'local') saveLocalData();
+        }
 
         async function pushGistData() {
             const btn = document.getElementById('btn-save');
-            if(btn) { btn.innerText = "Sauvegarde dans le Cloud..."; btn.disabled = true; }
+            if(btn && btn.id === 'btn-save') { btn.innerText = "Sauvegarde dans le Cloud..."; btn.disabled = true; }
             try {
                 const response = await fetch(`https://api.github.com/gists/${state.gistId}`, {
                     method: 'PATCH',
@@ -358,14 +410,14 @@
                     body: JSON.stringify({ files: { [GIST_FILENAME]: { content: JSON.stringify(state.data, null, 2) } } })
                 });
                 if (!response.ok) throw new Error("Erreur");
-                if(btn) {
+                if(btn && btn.id === 'btn-save') {
                     btn.innerText = "✓ Sauvegardé sur GitHub !";
                     setTimeout(() => { btn.innerText = "Sauvegarder dans mon journal"; btn.disabled = false; }, 2000);
                 }
                 updateJournalFilters(); renderJournal();
             } catch (e) {
                 console.error(e); alert("Échec de la sauvegarde GitHub. On sauvegarde en local.");
-                saveLocalData(); if(btn) btn.disabled = false;
+                saveLocalData(); if(btn && btn.id === 'btn-save') btn.disabled = false;
             }
         }
 
@@ -546,25 +598,51 @@
             if (state.mode === 'github') { pushGistData(); } else { saveLocalData(); }
         }
 
-        function getMonthYearFromWeekIndex(index) {
-            const birthDate = new Date(state.birthdate);
-            const msPerWeek = 1000 * 60 * 60 * 24 * 7;
-            const targetDate = new Date(birthDate.getTime() + (index * msPerWeek));
-            return `${moisNoms[targetDate.getMonth()]} ${targetDate.getFullYear()}`;
+        // --- 🧮 GESTION DES JALONS PAR DATE EXACTE ---
+        
+        function openMilestoneModalWithDate(dateStr) {
+            document.getElementById('milestone-modal').classList.remove('hidden');
+            const dateInput = document.getElementById('milestone-date');
+            
+            // Empêcher de sélectionner une date dans le futur
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('max', today);
+            
+            dateInput.value = dateStr;
+            document.getElementById('milestone-input').value = "";
+            refreshMilestoneList();
         }
 
-        function openMilestoneModal(index) {
-            currentMilestoneIndex = index;
-            const dateStr = getMonthYearFromWeekIndex(index);
-            document.getElementById('milestone-date-label').innerText = `Événement autour de : ${dateStr}`;
+        function openMilestoneModalForWeek(weekIndex) {
+            let defaultDate;
+            if (window.currentMilestonesByWeek && window.currentMilestonesByWeek[weekIndex]) {
+                // S'il y a déjà un événement, on prend la date exacte du premier pour l'afficher
+                defaultDate = window.currentMilestonesByWeek[weekIndex][0].date;
+            } else {
+                // Sinon, date approximative de la semaine cliquée
+                const birthDate = new Date(state.birthdate);
+                const msPerWeek = 1000 * 60 * 60 * 24 * 7;
+                const targetDate = new Date(birthDate.getTime() + (weekIndex * msPerWeek));
+                defaultDate = targetDate.toISOString().split('T')[0];
+            }
+            openMilestoneModalWithDate(defaultDate);
+        }
+
+        function refreshMilestoneList() {
+            const dateStr = document.getElementById('milestone-date').value;
+            const listContainer = document.getElementById('milestone-list');
+            listContainer.innerHTML = '';
             
-            const input = document.getElementById('milestone-input');
-            if (state.data.milestones && state.data.milestones[index]) {
-                input.value = state.data.milestones[index];
-            } else { input.value = ""; }
-            
-            document.getElementById('milestone-modal').classList.remove('hidden');
-            input.focus();
+            if (state.data.milestones[dateStr] && state.data.milestones[dateStr].length > 0) {
+                state.data.milestones[dateStr].forEach((text, idx) => {
+                    listContainer.innerHTML += `
+                        <div class="milestone-item">
+                            <span>${text}</span>
+                            <button class="btn-delete" onclick="deleteMilestone('${dateStr}', ${idx})" title="Supprimer">✖</button>
+                        </div>
+                    `;
+                });
+            }
         }
 
         function closeMilestoneModal() {
@@ -572,13 +650,35 @@
         }
 
         function saveMilestone() {
-            const val = document.getElementById('milestone-input').value.trim();
-            if (!state.data.milestones) state.data.milestones = {};
+            const dateStr = document.getElementById('milestone-date').value;
+            const text = document.getElementById('milestone-input').value.trim();
             
-            if (val) { state.data.milestones[currentMilestoneIndex] = val; } 
-            else { delete state.data.milestones[currentMilestoneIndex]; }
+            if (!dateStr || !text) return;
             
-            closeMilestoneModal(); renderMementoMori();
+            // Validation anti-futur manuel
+            const selectedDate = new Date(dateStr);
+            if (selectedDate > new Date()) {
+                alert("Impossible de prévoir l'avenir ! Reste dans le passé ou le présent.");
+                return;
+            }
+
+            if (!state.data.milestones[dateStr]) state.data.milestones[dateStr] = [];
+            state.data.milestones[dateStr].push(text);
+            
+            document.getElementById('milestone-input').value = ""; // Vider l'input
+            refreshMilestoneList();
+            renderMementoMori();
+            
+            if (state.mode === 'github') { pushGistData(); } else { saveLocalData(); }
+        }
+        
+        function deleteMilestone(dateStr, idx) {
+            state.data.milestones[dateStr].splice(idx, 1);
+            if (state.data.milestones[dateStr].length === 0) {
+                delete state.data.milestones[dateStr];
+            }
+            refreshMilestoneList();
+            renderMementoMori();
             if (state.mode === 'github') { pushGistData(); } else { saveLocalData(); }
         }
 
@@ -589,6 +689,19 @@
             const weeksLived = Math.floor((today - birthDate) / msPerWeek);
             
             document.getElementById('memento-stats').innerText = `Tu as vécu ${weeksLived.toLocaleString('fr-FR')} semaines pleines.`;
+
+            // Pré-calcul mathématique : map des dates -> index de semaine
+            window.currentMilestonesByWeek = {};
+            if (state.data.milestones) {
+                for (const [dateStr, eventsArr] of Object.entries(state.data.milestones)) {
+                    const eventDate = new Date(dateStr);
+                    const weekIdx = Math.floor((eventDate - birthDate) / msPerWeek);
+                    if (weekIdx >= 0) {
+                        if (!window.currentMilestonesByWeek[weekIdx]) window.currentMilestonesByWeek[weekIdx] = [];
+                        eventsArr.forEach(e => window.currentMilestonesByWeek[weekIdx].push({ date: dateStr, text: e }));
+                    }
+                }
+            }
 
             const grid = document.getElementById('life-grid');
             grid.innerHTML = '';
@@ -605,30 +718,36 @@
                     box.className = 'week-box';
                     
                     const capturedIndex = currentWeekIndex;
-                    const dateStr = getMonthYearFromWeekIndex(capturedIndex);
-                    let milestoneText = "";
+                    
+                    // Calcul de la date affichée sur l'écran Radar
+                    const approxDate = new Date(birthDate.getTime() + (capturedIndex * msPerWeek));
+                    const approxDateStr = `${moisNoms[approxDate.getMonth()]} ${approxDate.getFullYear()}`;
+                    let radarText = "";
 
-                    // Traitement de l'affichage du Jalon
-                    if (state.data.milestones && state.data.milestones[capturedIndex]) {
-                        box.classList.add('milestone');
-                        milestoneText = ` — ${state.data.milestones[capturedIndex]}`;
-                    }
-
-                    // 🛡️ Séparation Passé / Futur
+                    // 🛡️ Séparation Passé / Futur strict
                     if (capturedIndex <= weeksLived) {
                         box.classList.add('past');
                         box.classList.add('lived');
-                        box.onclick = () => openMilestoneModal(capturedIndex);
+                        box.onclick = () => openMilestoneModalForWeek(capturedIndex);
+                        
+                        // Traitement de l'affichage du Jalon
+                        if (window.currentMilestonesByWeek[capturedIndex]) {
+                            box.classList.add('milestone');
+                            const events = window.currentMilestonesByWeek[capturedIndex];
+                            // On compile le texte de tous les événements de cette semaine
+                            const allTexts = events.map(e => e.text).join(" & ");
+                            radarText = ` — ${allTexts}`;
+                        }
                     } else {
                         box.classList.add('future');
                     }
 
-                    // 📡 L'écran Radar (Survol PC / Toucher Mobile)
+                    // 📡 L'écran Radar
                     const displayInfo = () => {
                         const infoZone = document.getElementById('grid-hover-info');
-                        infoZone.innerText = `${dateStr}${milestoneText}`;
-                        infoZone.style.color = milestoneText ? 'var(--accent-color)' : 'var(--text-light)';
-                        infoZone.style.fontWeight = milestoneText ? 'bold' : 'normal';
+                        infoZone.innerText = `${approxDateStr}${radarText}`;
+                        infoZone.style.color = radarText ? 'var(--gold-milestone)' : 'var(--text-light)';
+                        infoZone.style.fontWeight = radarText ? 'bold' : 'normal';
                     };
 
                     box.addEventListener('mouseenter', displayInfo);
