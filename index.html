@@ -501,6 +501,17 @@
         }
 
         init();
+
+// --- 4. ENREGISTREMENT DU SERVICE WORKER (PWA) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then((registration) => {
+                    console.log('ServiceWorker OK');
+                }).catch((error) => {
+                    console.log('Erreur ServiceWorker :', error);
+                });
+            });
+        }
     </script>
 </body>
 </html>
