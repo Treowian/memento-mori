@@ -108,6 +108,12 @@
         .year-marker { width: 24px; font-family: var(--font-sans); font-size: 0.75rem; color: var(--text-color); margin-left: 8px; text-align: right; }
 
         .journal-actions { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto 2rem auto; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+        
+        /* 🔍 Style des Filtres */
+        .journal-filters { display: flex; gap: 1rem; max-width: 600px; margin: 0 auto 2rem auto; justify-content: flex-start; }
+        .journal-filters select { appearance: none; background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 0.5rem 1rem; border-radius: 4px; font-family: var(--font-sans); font-size: 0.9rem; cursor: pointer; outline: none; }
+        .journal-filters select:hover { border-color: var(--text-color); }
+        
         .journal-empty { text-align: center; color: var(--text-light); font-style: italic; margin-top: 3rem; }
         .journal-list { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
         
@@ -128,6 +134,7 @@
             .week-box { width: 4px; height: 4px; border-radius: 0; }
             .week-box:nth-child(26) { margin-right: 4px; }
             .year-marker { font-size: 0.65rem; margin-left: 4px; width: 15px; }
+            .journal-filters { flex-direction: column; gap: 0.5rem; }
         }
     </style>
 </head>
@@ -207,6 +214,16 @@
                     <h2>Tes mémoires</h2>
                     <button class="btn-secondary" style="width:auto; margin:0;" onclick="exportData()">Exporter (JSON)</button>
                 </div>
+                
+                <div class="journal-filters" id="journal-filters">
+                    <select id="filter-month" onchange="renderJournal()">
+                        <option value="all">Tous les mois</option>
+                    </select>
+                    <select id="filter-year" onchange="renderJournal()">
+                        <option value="all">Toutes les années</option>
+                    </select>
+                </div>
+
                 <div id="journal-content" class="journal-list"></div>
             </div>
         </div>
@@ -231,7 +248,7 @@
         const GIST_FILENAME = 'memento-mori.json';
 
         let currentDateOffset = 0;
-        let calCurrentDate = new Date(); // Date actuellement affichée dans le modal calendrier
+        let calCurrentDate = new Date(); 
         
         const state = {
             mode: localStorage.getItem('mm_mode') || null,
@@ -290,6 +307,7 @@
             localStorage.setItem('mm_journal_data', JSON.stringify(state.data));
             document.getElementById('btn-save').innerText = "✓ Sauvegardé en local !";
             setTimeout(() => { document.getElementById('btn-save').innerText = "Sauvegarder dans mon journal"; }, 2000);
+            updateJournalFilters();
             renderJournal();
         }
 
@@ -325,6 +343,7 @@
                 });
                 if (!response.ok) throw new Error("Erreur");
                 btn.innerText = "✓ Sauvegardé sur GitHub !";
+                updateJournalFilters();
                 renderJournal();
                 setTimeout(() => { btn.innerText = "Sauvegarder dans mon journal"; btn.disabled = false; }, 2000);
             } catch (e) {
@@ -336,7 +355,10 @@
         function launchApp() {
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('main-screen').classList.remove('hidden');
-            updateDisplay(); renderMementoMori(); renderJournal();
+            updateDisplay(); 
+            renderMementoMori(); 
+            updateJournalFilters();
+            renderJournal();
         }
 
         function switchTab(tabName) {
@@ -346,7 +368,7 @@
             document.getElementById('view-memento').classList.add('hidden');
             document.getElementById('view-journal').classList.add('hidden');
             document.getElementById(`view-${tabName}`).classList.remove('hidden');
-            document.getElementById('calendar-modal').classList.remove('active'); // Fermer le calendrier si ouvert
+            document.getElementById('calendar-modal').classList.remove('active');
         }
 
         function autoGrow(element) { element.style.height = "5px"; element.style.height = (element.scrollHeight) + "px"; }
@@ -356,7 +378,6 @@
             const modal = document.getElementById('calendar-modal');
             modal.classList.toggle('active');
             if(modal.classList.contains('active')) {
-                // Aligner le calendrier sur l'année/mois de la date visualisée
                 const targetDate = new Date();
                 targetDate.setDate(targetDate.getDate() + currentDateOffset);
                 calCurrentDate = new Date(targetDate);
@@ -372,33 +393,23 @@
         function renderCalendarUI() {
             const year = calCurrentDate.getFullYear();
             const month = calCurrentDate.getMonth();
-            
             document.getElementById('cal-month-year').innerText = `${moisNoms[month]} ${year}`;
             
-            // Empêcher d'aller dans le mois suivant si on y est pas encore
             const realToday = new Date();
             const btnNext = document.getElementById('cal-next-btn');
             if (year > realToday.getFullYear() || (year === realToday.getFullYear() && month >= realToday.getMonth())) {
                 btnNext.style.visibility = 'hidden';
-            } else {
-                btnNext.style.visibility = 'visible';
-            }
+            } else { btnNext.style.visibility = 'visible'; }
 
             const grid = document.getElementById('cal-grid-body');
             grid.innerHTML = '';
 
             const firstDayIndex = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
-            // Ajustement pour commencer par Lundi (0=Dimanche -> 6=Dimanche, 0=Lundi)
             const startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
 
-            // Cases vides avant le 1er
-            for (let i = 0; i < startOffset; i++) {
-                grid.innerHTML += `<div class="cal-day empty"></div>`;
-            }
+            for (let i = 0; i < startOffset; i++) { grid.innerHTML += `<div class="cal-day empty"></div>`; }
 
-            // Date actuellement visualisée (pour la surligner)
             const targetDate = new Date();
             targetDate.setDate(targetDate.getDate() + currentDateOffset);
 
@@ -409,18 +420,9 @@
                 const yearStr = String(year);
                 
                 let classes = 'cal-day';
-                
-                // Bloquer les jours futurs
-                if (cellDate > realToday) {
-                    classes += ' future';
-                }
+                if (cellDate > realToday) classes += ' future';
+                if (d === targetDate.getDate() && month === targetDate.getMonth() && year === targetDate.getFullYear()) classes += ' selected';
 
-                // Surligner le jour affiché
-                if (d === targetDate.getDate() && month === targetDate.getMonth() && year === targetDate.getFullYear()) {
-                    classes += ' selected';
-                }
-
-                // Vérifier si des données existent (le petit point)
                 const monthDayKey = `${monthStr}-${dayStr}`;
                 if (state.data[monthDayKey] && state.data[monthDayKey][yearStr] && state.data[monthDayKey][yearStr].trim() !== "") {
                     classes += ' has-data';
@@ -436,14 +438,12 @@
             today.setHours(0,0,0,0);
             
             const diffTime = selectedDate - today;
-            let offsetDays = Math.round(diffTime / 86400000); // 1000 * 60 * 60 * 24
-            
-            if (offsetDays > 0) offsetDays = 0; // Sécurité futur
+            let offsetDays = Math.round(diffTime / 86400000); 
+            if (offsetDays > 0) offsetDays = 0; 
             
             currentDateOffset = offsetDays;
             document.getElementById('calendar-modal').classList.remove('active');
             
-            // Mise à jour de l'UI des boutons
             if (currentDateOffset < 0) {
                 document.getElementById('btn-next-day').classList.remove('invisible');
                 document.getElementById('btn-today').classList.remove('invisible');
@@ -451,7 +451,6 @@
                 document.getElementById('btn-next-day').classList.add('invisible');
                 document.getElementById('btn-today').classList.add('invisible');
             }
-            
             updateDisplay();
         }
 
@@ -465,7 +464,6 @@
         function changeDay(offset) {
             currentDateOffset += offset;
             if (currentDateOffset > 0) currentDateOffset = 0; 
-            
             if (currentDateOffset < 0) {
                 document.getElementById('btn-next-day').classList.remove('invisible');
                 document.getElementById('btn-today').classList.remove('invisible');
@@ -570,6 +568,39 @@
 
         function togglePrivacy() { document.getElementById('life-grid').classList.toggle('blurred'); }
 
+        // --- FILTRES DU JOURNAL ---
+        function updateJournalFilters() {
+            const yearSet = new Set();
+            const monthSet = new Set();
+            
+            // On parcourt les données pour extraire uniquement les années et mois utilisés
+            for (const [dateKey, yearsObj] of Object.entries(state.data)) {
+                const [m, d] = dateKey.split('-');
+                monthSet.add(m);
+                for (const y of Object.keys(yearsObj)) {
+                    yearSet.add(y);
+                }
+            }
+
+            // Mise à jour du filtre "Années"
+            const yearSelect = document.getElementById('filter-year');
+            const currentYearVal = yearSelect.value;
+            yearSelect.innerHTML = '<option value="all">Toutes les années</option>';
+            Array.from(yearSet).sort((a,b) => b-a).forEach(y => {
+                yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+            });
+            if(yearSet.has(currentYearVal)) yearSelect.value = currentYearVal;
+
+            // Mise à jour du filtre "Mois"
+            const monthSelect = document.getElementById('filter-month');
+            const currentMonthVal = monthSelect.value;
+            monthSelect.innerHTML = '<option value="all">Tous les mois</option>';
+            Array.from(monthSet).sort().forEach(m => {
+                monthSelect.innerHTML += `<option value="${m}">${moisNoms[parseInt(m)-1]}</option>`;
+            });
+            if(monthSet.has(currentMonthVal)) monthSelect.value = currentMonthVal;
+        }
+
         function renderJournal() {
             const container = document.getElementById('journal-content');
             container.innerHTML = '';
@@ -578,6 +609,10 @@
                 container.innerHTML = '<div class="journal-empty">Ton journal est vide. Écris ta première réponse aujourd\'hui !</div>';
                 return;
             }
+
+            // Récupération des valeurs des filtres
+            const filterYear = document.getElementById('filter-year').value;
+            const filterMonth = document.getElementById('filter-month').value;
 
             const today = new Date();
             const currentM = today.getMonth() + 1;
@@ -600,22 +635,44 @@
             });
 
             sortedDates.forEach(dateKey => {
+                const [mStr, dStr] = dateKey.split('-');
+                
+                // 🛑 Application du filtre "Mois"
+                if (filterMonth !== 'all' && mStr !== filterMonth) return;
+
                 const yearsObj = state.data[dateKey];
                 const sortedYears = Object.keys(yearsObj).sort((a, b) => b - a);
                 
-                const entryDiv = document.createElement('div');
-                entryDiv.style.borderBottom = "1px dashed var(--border-color)";
-                entryDiv.style.paddingBottom = "1rem";
-                
-                const [mStr, dStr] = dateKey.split('-');
+                let entryHtml = '';
+                let hasVisibleYears = false;
+
+                sortedYears.forEach(year => {
+                    // 🛑 Application du filtre "Année"
+                    if (filterYear !== 'all' && year !== filterYear) return;
+                    
+                    hasVisibleYears = true;
+                    entryHtml += `
+                        <div style="margin-bottom: 0.5rem; background: rgba(255,255,255,0.4); padding: 1rem; border-radius: 4px; border-left: 2px solid var(--border-color);">
+                            <strong style="color: var(--text-light); font-size: 0.85rem; display:block; margin-bottom:0.3rem;">${year}</strong> 
+                            <span style="font-family: var(--font-main); line-height:1.5;">${yearsObj[year]}</span>
+                        </div>
+                    `;
+                });
+
+                // Si aucune année n'est visible pour ce jour (à cause du filtre), on ignore ce jour
+                if (!hasVisibleYears) return;
+
                 const mNum = parseInt(mStr);
                 const dNum = parseInt(dStr);
                 const displayDate = `${dStr}/${mStr}`;
-                
                 const targetQuestion = getQuestionFor(mNum, dNum);
                 
                 const isToday = (mNum === currentM && dNum === currentD);
                 const badgeHtml = isToday ? '<span class="badge-today">Aujourd\'hui</span>' : '';
+                
+                const entryDiv = document.createElement('div');
+                entryDiv.style.borderBottom = "1px dashed var(--border-color)";
+                entryDiv.style.paddingBottom = "1rem";
                 
                 entryDiv.innerHTML = `
                     <div class="journal-entry-header">
@@ -623,18 +680,16 @@
                         ${badgeHtml}
                     </div>
                     <div class="journal-entry-question">"${targetQuestion}"</div>
+                    ${entryHtml}
                 `;
                 
-                sortedYears.forEach(year => {
-                    entryDiv.innerHTML += `
-                        <div style="margin-bottom: 0.5rem; background: rgba(255,255,255,0.4); padding: 1rem; border-radius: 4px; border-left: 2px solid var(--border-color);">
-                            <strong style="color: var(--text-light); font-size: 0.85rem; display:block; margin-bottom:0.3rem;">${year}</strong> 
-                            <span style="font-family: var(--font-main); line-height:1.5;">${yearsObj[year]}</span>
-                        </div>
-                    `;
-                });
                 container.appendChild(entryDiv);
             });
+
+            // Si tous les filtres masquent tout
+            if (container.innerHTML === '') {
+                container.innerHTML = '<div class="journal-empty">Aucune réponse ne correspond à ces filtres.</div>';
+            }
         }
 
         function exportData() {
@@ -651,7 +706,6 @@
             });
         }
 
-        // Fermer le calendrier si on clique en dehors
         document.addEventListener('click', function(event) {
             const wrapper = document.querySelector('.date-selector-wrapper');
             const modal = document.getElementById('calendar-modal');
