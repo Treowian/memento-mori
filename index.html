@@ -21,11 +21,8 @@
             --text-light: #6b777a;
             --border-color: #a4b0b3; 
             --accent-color: #8b5a2b;
-            
-            /* Ton bleu assumé et le doré pour les événements */
-            --navy-blue: #160085; 
+            --navy-blue: #1600B0; 
             --gold-milestone: #d4af37; 
-            
             --font-main: 'Georgia', serif;
             --font-sans: system-ui, -apple-system, sans-serif;
         }
@@ -89,7 +86,6 @@
         .memento-stats { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .memento-quote { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
         
-        /* 🔧 Zone d'action de la grille restructurée pour mobile */
         .memento-actions { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; max-width: 800px; margin: 0 auto 0.5rem auto; flex-wrap: wrap; gap: 0.8rem;}
         .grid-hover-info { font-family: var(--font-sans); font-size: 0.9rem; color: var(--text-light); height: 1.5rem; display: flex; align-items: flex-end; transition: color 0.2s ease; flex-grow: 1;}
         .btn-add-event { color: var(--navy-blue); font-weight: bold; padding: 0; margin-left: auto; }
@@ -127,6 +123,19 @@
         .journal-filters select:hover { border-color: var(--text-color); }
         .journal-empty { text-align: center; color: var(--text-light); font-style: italic; margin-top: 3rem; }
         .journal-list { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+        
+        /* 📂 Styles pour les Accordéons de Mois */
+        .month-group { width: 100%; border-bottom: 1px dashed var(--border-color); margin-bottom: 1rem; }
+        .month-title { 
+            font-family: var(--font-sans); font-size: 1.5rem; font-weight: bold; color: var(--text-color); 
+            cursor: pointer; padding: 1rem 0; display: flex; align-items: center; gap: 0.5rem; 
+            list-style: none; /* Cache la flèche native sur certains navigateurs */
+        }
+        .month-title::-webkit-details-marker { display: none; } /* Cache la flèche native sur Safari/Chrome */
+        .month-icon { font-size: 0.8rem; transition: transform 0.3s ease; color: var(--navy-blue); }
+        .month-group[open] .month-icon { transform: rotate(180deg); }
+        .month-content { padding-top: 1rem; display: flex; flex-direction: column; gap: 2rem; padding-bottom: 2rem;}
+
         .journal-entry-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.3rem; }
         .journal-entry-date { font-family: var(--font-sans); color: var(--accent-color); font-size: 1.1rem; font-weight: bold; }
         .journal-entry-question { font-style: italic; color: var(--text-color); margin-bottom: 1rem; font-size: 1.1rem; line-height: 1.4; border-left: 2px solid var(--accent-color); padding-left: 0.8rem;}
@@ -145,8 +154,6 @@
             .week-box:nth-child(26) { margin-right: 4px; }
             .year-marker { font-size: 0.65rem; margin-left: 4px; width: 15px; }
             .journal-filters { flex-direction: column; gap: 0.5rem; }
-            
-            /* Ajustement flexbox pour isoler le bouton sur mobile */
             .memento-actions { flex-direction: column-reverse; align-items: flex-end; }
             .grid-hover-info { width: 100%; align-items: flex-start; margin-top: 0.5rem; }
         }
@@ -759,6 +766,7 @@
             if(monthSet.has(currentMonthVal)) monthSelect.value = currentMonthVal;
         }
 
+        // --- 📂 NOUVELLE FONCTION JOURNAL (AVEC ACCORDÉONS) ---
         function renderJournal() {
             const container = document.getElementById('journal-content');
             container.innerHTML = '';
@@ -773,75 +781,104 @@
             const filterMonth = document.getElementById('filter-month').value;
 
             const today = new Date();
-            const currentM = today.getMonth() + 1;
+            const currentM = today.getMonth() + 1; // Mois actuel (1-12)
             const currentD = today.getDate();
             
-            function getDayOfYearBase(m, d) {
-                const date = new Date(2024, m - 1, d); 
-                const start = new Date(2024, 0, 0);
-                return Math.floor((date - start) / 86400000);
-            }
+            // 1. Grouper les entrées par mois
+            const entriesByMonth = {};
             
-            const todayDayOfYear = getDayOfYearBase(currentM, currentD);
-
-            const sortedDates = journalKeys.sort((a, b) => {
-                const [mA, dA] = a.split('-').map(Number);
-                const [mB, dB] = b.split('-').map(Number);
-                let distA = (todayDayOfYear - getDayOfYearBase(mA, dA) + 366) % 366;
-                let distB = (todayDayOfYear - getDayOfYearBase(mB, dB) + 366) % 366;
-                return distA - distB; 
-            });
-
-            sortedDates.forEach(dateKey => {
+            journalKeys.forEach(dateKey => {
                 const [mStr, dStr] = dateKey.split('-');
                 if (filterMonth !== 'all' && mStr !== filterMonth) return;
 
                 const yearsObj = state.data[dateKey];
-                const sortedYears = Object.keys(yearsObj).sort((a, b) => b - a);
-                
-                let entryHtml = '';
+                const visibleYearsObj = {};
                 let hasVisibleYears = false;
 
-                sortedYears.forEach(year => {
+                Object.keys(yearsObj).sort((a, b) => b - a).forEach(year => {
                     if (filterYear !== 'all' && year !== filterYear) return;
+                    visibleYearsObj[year] = yearsObj[year];
                     hasVisibleYears = true;
-                    entryHtml += `
-                        <div style="margin-bottom: 0.5rem; background: rgba(255,255,255,0.4); padding: 1rem; border-radius: 4px; border-left: 2px solid var(--border-color);">
-                            <strong style="color: var(--text-light); font-size: 0.85rem; display:block; margin-bottom:0.3rem;">${year}</strong> 
-                            <span style="font-family: var(--font-main); line-height:1.5;">${yearsObj[year]}</span>
-                        </div>
-                    `;
                 });
 
-                if (!hasVisibleYears) return;
-
-                const mNum = parseInt(mStr);
-                const dNum = parseInt(dStr);
-                const displayDate = `${dStr}/${mStr}`;
-                const targetQuestion = getQuestionFor(mNum, dNum);
-                
-                const isToday = (mNum === currentM && dNum === currentD);
-                const badgeHtml = isToday ? '<span class="badge-today">Aujourd\'hui</span>' : '';
-                
-                const entryDiv = document.createElement('div');
-                entryDiv.style.borderBottom = "1px dashed var(--border-color)";
-                entryDiv.style.paddingBottom = "1rem";
-                
-                entryDiv.innerHTML = `
-                    <div class="journal-entry-header">
-                        <span class="journal-entry-date">${displayDate}</span>
-                        ${badgeHtml}
-                    </div>
-                    <div class="journal-entry-question">"${targetQuestion}"</div>
-                    ${entryHtml}
-                `;
-                
-                container.appendChild(entryDiv);
+                if (hasVisibleYears) {
+                    if (!entriesByMonth[mStr]) entriesByMonth[mStr] = [];
+                    entriesByMonth[mStr].push({ dStr, yearsObj: visibleYearsObj });
+                }
             });
 
-            if (container.innerHTML === '') {
+            if (Object.keys(entriesByMonth).length === 0) {
                 container.innerHTML = '<div class="journal-empty">Aucune réponse ne correspond à ces filtres.</div>';
+                return;
             }
+
+            // 2. Trier les mois (le mois actuel en premier, puis on recule)
+            const sortedMonths = Object.keys(entriesByMonth).sort((a, b) => {
+                const distA = (currentM - parseInt(a) + 12) % 12;
+                const distB = (currentM - parseInt(b) + 12) % 12;
+                return distA - distB;
+            });
+
+            // 3. Affichage
+            sortedMonths.forEach(mStr => {
+                const mNum = parseInt(mStr);
+                const monthName = moisNoms[mNum - 1];
+                
+                // Création de l'accordéon natif
+                const details = document.createElement('details');
+                details.className = 'month-group';
+                
+                // On ouvre par défaut si c'est le mois actuel ou si on a filtré un mois précis
+                if (mNum === currentM || filterMonth !== 'all') {
+                    details.open = true;
+                }
+
+                const summary = document.createElement('summary');
+                summary.className = 'month-title';
+                summary.innerHTML = `${monthName} <span class="month-icon">▼</span>`;
+                details.appendChild(summary);
+
+                const monthContent = document.createElement('div');
+                monthContent.className = 'month-content';
+
+                // Tri des jours à l'intérieur du mois (ordre décroissant)
+                const entries = entriesByMonth[mStr];
+                entries.sort((a, b) => parseInt(b.dStr) - parseInt(a.dStr));
+
+                entries.forEach(entry => {
+                    const dNum = parseInt(entry.dStr);
+                    const displayDate = `${entry.dStr}/${mStr}`;
+                    const targetQuestion = getQuestionFor(mNum, dNum);
+                    
+                    const isToday = (mNum === currentM && dNum === currentD);
+                    const badgeHtml = isToday ? '<span class="badge-today">Aujourd\'hui</span>' : '';
+                    
+                    let entryHtml = `
+                        <div class="journal-entry-header">
+                            <span class="journal-entry-date">${displayDate}</span>
+                            ${badgeHtml}
+                        </div>
+                        <div class="journal-entry-question">"${targetQuestion}"</div>
+                    `;
+
+                    const sortedYears = Object.keys(entry.yearsObj).sort((a, b) => b - a);
+                    sortedYears.forEach(year => {
+                        entryHtml += `
+                            <div style="margin-bottom: 0.5rem; background: rgba(255,255,255,0.4); padding: 1rem; border-radius: 4px; border-left: 2px solid var(--border-color);">
+                                <strong style="color: var(--text-light); font-size: 0.85rem; display:block; margin-bottom:0.3rem;">${year}</strong> 
+                                <span style="font-family: var(--font-main); line-height:1.5;">${entry.yearsObj[year]}</span>
+                            </div>
+                        `;
+                    });
+
+                    const entryDiv = document.createElement('div');
+                    entryDiv.innerHTML = entryHtml;
+                    monthContent.appendChild(entryDiv);
+                });
+
+                details.appendChild(monthContent);
+                container.appendChild(details);
+            });
         }
 
         function exportData() {
