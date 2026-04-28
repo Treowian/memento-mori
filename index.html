@@ -21,7 +21,7 @@
             --text-light: #6b777a;
             --border-color: #a4b0b3; 
             --accent-color: #8b5a2b;
-            --navy-blue: #1600B0; 
+            --navy-blue: #160085; 
             --gold-milestone: #d4af37; 
             --font-main: 'Georgia', serif;
             --font-sans: system-ui, -apple-system, sans-serif;
@@ -80,7 +80,7 @@
         .history-container { max-width: 600px; margin: 0 auto 2rem auto; display: flex; flex-direction: column; gap: 1rem; }
         .history-card { background: rgba(255, 255, 255, 0.4); padding: 1.5rem; border-radius: 4px; border-left: 3px solid var(--border-color); }
         .history-year { font-family: var(--font-sans); color: var(--text-light); font-size: 0.85rem; margin-bottom: 0.5rem; font-weight: bold; display: block; }
-        .history-text { margin: 0; line-height: 1.5; font-size: 1.1rem; }
+        .history-text { margin: 0; line-height: 1.5; font-size: 1.1rem; white-space: pre-wrap; }
 
         .memento-header { text-align: center; margin-bottom: 2rem; }
         .memento-stats { font-size: 1.5rem; margin-bottom: 0.5rem; }
@@ -90,10 +90,10 @@
         .grid-hover-info { font-family: var(--font-sans); font-size: 0.9rem; color: var(--text-light); height: 1.5rem; display: flex; align-items: flex-end; transition: color 0.2s ease; flex-grow: 1;}
         .btn-add-event { color: var(--navy-blue); font-weight: bold; padding: 0; margin-left: auto; }
         
-        .grid-container { width: 100%; overflow-x: auto; display: flex; justify-content: center; }
-        .life-grid { display: flex; flex-direction: column; gap: 2px; }
-        .year-row { display: flex; gap: 2px; align-items: center; }
+        .grid-container { width: 100%; overflow-x: auto; padding-bottom: 1rem; }
+        .life-grid { display: flex; flex-direction: column; gap: 2px; width: max-content; margin: 0 auto; padding-right: 15px; }
         
+        .year-row { display: flex; gap: 2px; align-items: center; }
         .week-box { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--border-color); background-color: transparent; box-sizing: border-box; transition: transform 0.1s; }
         .week-box:nth-child(26) { margin-right: 12px; }
         .week-box.past { cursor: pointer; }
@@ -103,10 +103,11 @@
         .week-box.milestone { background-color: var(--gold-milestone); border-color: var(--gold-milestone); box-shadow: 0 0 5px rgba(212, 175, 55, 0.6); }
         .year-marker { width: 24px; font-family: var(--font-sans); font-size: 0.75rem; color: var(--text-color); margin-left: 8px; text-align: right; }
 
+        /* Modales (Événements & Journal) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--bg-color); padding: 2rem; border-radius: 8px; width: 90%; max-width: 450px; border: 1px solid var(--border-color); box-shadow: 0 15px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column;}
         .modal-title { font-family: var(--font-sans); color: var(--navy-blue); font-weight: bold; margin: 0 0 1.5rem 0; font-size: 1.2rem;}
-        .modal-input { width: 100%; font-family: var(--font-main); font-size: 1.1rem; padding: 0.5rem 0; border: none; border-bottom: 2px solid var(--border-color); background: transparent; outline: none; margin-bottom: 1.5rem; color: var(--text-color); box-sizing: border-box;}
+        .modal-input { width: 100%; font-family: var(--font-main); font-size: 1.1rem; padding: 0.5rem 0; border: none; border-bottom: 2px solid var(--border-color); background: transparent; outline: none; margin-bottom: 1.5rem; color: var(--text-color); box-sizing: border-box; resize: none;}
         .modal-input:focus { border-bottom-color: var(--gold-milestone); }
         .modal-input[type="date"] { font-family: var(--font-sans); }
         .modal-label { font-size: 0.85rem; color: var(--text-light); font-family: var(--font-sans); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 1px;}
@@ -114,8 +115,11 @@
         
         .milestone-list-container { max-height: 150px; overflow-y: auto; border-top: 1px dashed var(--border-color); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.8rem;}
         .milestone-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 0.8rem; border-radius: 4px; border-left: 3px solid var(--gold-milestone); font-family: var(--font-main);}
-        .btn-delete { background: none; border: none; color: #b33939; cursor: pointer; font-size: 1.2rem; padding: 0 0.5rem;}
-        .btn-delete:hover { opacity: 0.7; }
+        
+        .btn-icon-group { display: flex; gap: 0.5rem; }
+        .btn-icon { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0 0.3rem; opacity: 0.7; transition: opacity 0.2s;}
+        .btn-icon:hover { opacity: 1; }
+        .btn-icon.del { color: #b33939; }
 
         .journal-actions { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto 2rem auto; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
         .journal-filters { display: flex; gap: 1rem; max-width: 600px; margin: 0 auto 2rem auto; justify-content: flex-start; }
@@ -124,15 +128,11 @@
         .journal-empty { text-align: center; color: var(--text-light); font-style: italic; margin-top: 3rem; }
         .journal-list { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
         
-        /* 📂 Styles pour les Accordéons de Mois */
+        /* Styles partagés pour Accordéons (Journal & Timeline) */
         .month-group { width: 100%; border-bottom: 1px dashed var(--border-color); margin-bottom: 1rem; }
-        .month-title { 
-            font-family: var(--font-sans); font-size: 1.5rem; font-weight: bold; color: var(--text-color); 
-            cursor: pointer; padding: 1rem 0; display: flex; align-items: center; gap: 0.5rem; 
-            list-style: none; /* Cache la flèche native sur certains navigateurs */
-        }
-        .month-title::-webkit-details-marker { display: none; } /* Cache la flèche native sur Safari/Chrome */
-        .month-icon { font-size: 0.8rem; transition: transform 0.3s ease; color: var(--navy-blue); }
+        .month-title { font-family: var(--font-sans); font-size: 1.2rem; font-weight: 600; color: var(--text-color); cursor: pointer; padding: 1rem 0; display: flex; align-items: center; gap: 0.5rem; list-style: none; }
+        .month-title::-webkit-details-marker { display: none; } 
+        .month-icon { font-size: 0.7rem; transition: transform 0.3s ease; color: var(--navy-blue); }
         .month-group[open] .month-icon { transform: rotate(180deg); }
         .month-content { padding-top: 1rem; display: flex; flex-direction: column; gap: 2rem; padding-bottom: 2rem;}
 
@@ -140,17 +140,29 @@
         .journal-entry-date { font-family: var(--font-sans); color: var(--accent-color); font-size: 1.1rem; font-weight: bold; }
         .journal-entry-question { font-style: italic; color: var(--text-color); margin-bottom: 1rem; font-size: 1.1rem; line-height: 1.4; border-left: 2px solid var(--accent-color); padding-left: 0.8rem;}
         .badge-today { background: var(--text-color); color: var(--bg-color); font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 12px; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px;}
+        
+        .action-link { font-family: var(--font-sans); font-size: 0.75rem; color: var(--accent-color); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; margin-left: 0.5rem;}
+        .action-link:hover { opacity: 0.8; }
 
         .hidden { display: none !important; visibility: hidden; }
         .invisible { visibility: hidden; pointer-events: none; }
         .error-msg { color: #b33939; font-size: 0.9rem; margin-top: 0.5rem; text-align: center; display: none; }
 
+        /* Timeline Globale V2 */
+        .timeline-section { width: 100%; max-width: 600px; margin: 3rem auto 2rem auto; border-top: 1px dashed var(--border-color); padding-top: 2.5rem; }
+        .timeline-main-title { font-family: var(--font-main); font-size: 1.5rem; text-align: center; margin-bottom: 2rem; font-style: italic; color: var(--text-color); }
+        
+        .timeline-item { border-left: 2px solid var(--gold-milestone); padding-left: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .timeline-item::before { content: ''; position: absolute; left: -6px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold-milestone); border: 2px solid var(--bg-color); }
+        .timeline-date { font-family: var(--font-sans); font-weight: bold; font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 1px; }
+        .timeline-text { font-family: var(--font-main); font-size: 1.2rem; line-height: 1.5; color: var(--text-color); }
+        .timeline-actions { margin-top: 0.5rem; }
+
         @media (max-width: 600px) {
             .container { padding: 1rem; }
-            .grid-container { justify-content: center; }
             .year-row { gap: 1px; } 
-            .life-grid { gap: 1px; } 
-            .week-box { width: 5px; height: 5px; }
+            .life-grid { gap: 1px; padding-right: 5px; } 
+            .week-box { width: 5px; height: 5px; pointer-events: none; } 
             .week-box:nth-child(26) { margin-right: 4px; }
             .year-marker { font-size: 0.65rem; margin-left: 4px; width: 15px; }
             .journal-filters { flex-direction: column; gap: 0.5rem; }
@@ -224,8 +236,14 @@
                     <div class="grid-hover-info" id="grid-hover-info">Survolez une bulle pour voir la date...</div>
                     <button class="nav-btn btn-add-event" onclick="openMilestoneModalWithDate(new Date().toISOString().split('T')[0])">+ Ajouter un événement</button>
                 </div>
+                
                 <div class="grid-container">
                     <div class="life-grid" id="life-grid"></div>
+                </div>
+
+                <div class="timeline-section">
+                    <h3 class="timeline-main-title">Souvenirs Marquants</h3>
+                    <div id="timeline-content"></div>
                 </div>
             </div>
 
@@ -251,9 +269,20 @@
                 <input type="text" id="milestone-input" class="modal-input" placeholder="Ex: Obtention du diplôme..." maxlength="50">
                 <div class="modal-buttons">
                     <button class="btn-secondary" style="margin-top:0;" onclick="closeMilestoneModal()">Fermer</button>
-                    <button class="btn-primary" style="margin-top:0;" onclick="saveMilestone()">Ajouter</button>
+                    <button class="btn-primary" id="btn-save-milestone" style="margin-top:0;" onclick="saveMilestone()">Ajouter</button>
                 </div>
                 <div id="milestone-list" class="milestone-list-container"></div>
+            </div>
+        </div>
+
+        <div id="edit-journal-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h3 class="modal-title">Modifier l'entrée</h3>
+                <textarea id="edit-journal-input" class="modal-input" style="min-height:150px; line-height: 1.5; padding: 1rem; border: 1px solid var(--border-color);"></textarea>
+                <div class="modal-buttons">
+                    <button class="btn-secondary" style="margin-top:0;" onclick="closeEditJournal()">Annuler</button>
+                    <button class="btn-primary" style="margin-top:0;" onclick="confirmEditJournal()">Sauvegarder</button>
+                </div>
             </div>
         </div>
 
@@ -281,6 +310,8 @@
         let calCurrentDate = new Date(); 
         window.currentMilestonesByWeek = {}; 
         
+        let editingMilestoneIdx = null; // Suivi de l'édition d'événement
+
         const state = {
             mode: localStorage.getItem('mm_mode') || null,
             birthdate: localStorage.getItem('mm_birthdate'),
@@ -301,13 +332,24 @@
             return questions[dayOfYear - 1] || "Question introuvable.";
         }
 
-        function isLeapYear(year) { return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0); }
+        // 🐛 CORRECTIF 2 : Algorithme exact de calcul de date de bulle (Pas de dérive de temps)
+        function getApproxDateForWeek(idx, birthdateStr) {
+            const [y, m, d] = birthdateStr.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            date.setFullYear(date.getFullYear() + Math.floor(idx / 52)); // Année pile
+            date.setDate(date.getDate() + ((idx % 52) * 7)); // Semaine pile
+            return date;
+        }
 
         function init() {
             if (state.birthdate) {
                 if (state.mode === 'github' && state.gistId && state.token) { fetchGistData(); } 
                 else if (state.mode === 'local') { loadLocalData(); launchApp(); }
             }
+            
+            const isMobileView = window.matchMedia("(max-width: 600px)").matches;
+            document.getElementById('grid-hover-info').innerText = isMobileView ? "Ta vie en un coup d'œil." : "Survolez une bulle pour voir la date...";
+            setupGridDelegation();
         }
 
         function startLocalMode() {
@@ -375,9 +417,7 @@
             for (const key of Object.keys(state.data.milestones)) {
                 if (!key.includes('-')) { 
                     const oldText = state.data.milestones[key];
-                    const birthDate = new Date(state.birthdate);
-                    const msPerWeek = 1000 * 60 * 60 * 24 * 7;
-                    const approxDate = new Date(birthDate.getTime() + (parseInt(key) * msPerWeek));
+                    const approxDate = getApproxDateForWeek(parseInt(key), state.birthdate);
                     const newKey = approxDate.toISOString().split('T')[0];
                     
                     if(!state.data.milestones[newKey]) state.data.milestones[newKey] = [];
@@ -562,7 +602,17 @@
                     if (y !== yearStr) { 
                         const card = document.createElement('div');
                         card.className = 'history-card';
-                        card.innerHTML = `<span class="history-year">${y}</span><p class="history-text">${state.data[monthDayKey][y]}</p>`;
+                        
+                        const ySpan = document.createElement('span');
+                        ySpan.className = 'history-year';
+                        ySpan.textContent = y;
+                        
+                        const textP = document.createElement('p');
+                        textP.className = 'history-text';
+                        textP.textContent = state.data[monthDayKey][y];
+                        
+                        card.appendChild(ySpan);
+                        card.appendChild(textP);
                         historyContainer.appendChild(card);
                     }
                 });
@@ -587,50 +637,72 @@
             if (state.mode === 'github') { pushGistData(); } else { saveLocalData(); }
         }
 
+        // --- 🛡️ GESTION JALONS (MILESTONES) ---
         function openMilestoneModalWithDate(dateStr) {
             document.getElementById('milestone-modal').classList.remove('hidden');
             const dateInput = document.getElementById('milestone-date');
             
+            // Sécurités temporelles natifs
             const today = new Date().toISOString().split('T')[0];
             dateInput.setAttribute('max', today);
+            dateInput.setAttribute('min', state.birthdate);
             
             dateInput.value = dateStr;
             document.getElementById('milestone-input').value = "";
             refreshMilestoneList();
         }
 
-        function openMilestoneModalForWeek(weekIndex) {
-            let defaultDate;
-            if (window.currentMilestonesByWeek && window.currentMilestonesByWeek[weekIndex]) {
-                defaultDate = window.currentMilestonesByWeek[weekIndex][0].date;
-            } else {
-                const birthDate = new Date(state.birthdate);
-                const msPerWeek = 1000 * 60 * 60 * 24 * 7;
-                const targetDate = new Date(birthDate.getTime() + (weekIndex * msPerWeek));
-                defaultDate = targetDate.toISOString().split('T')[0];
-            }
-            openMilestoneModalWithDate(defaultDate);
-        }
-
         function refreshMilestoneList() {
+            editingMilestoneIdx = null; // Sortie du mode édition
+            document.getElementById('btn-save-milestone').innerText = "Ajouter";
+            
             const dateStr = document.getElementById('milestone-date').value;
             const listContainer = document.getElementById('milestone-list');
             listContainer.innerHTML = '';
             
             if (state.data.milestones[dateStr] && state.data.milestones[dateStr].length > 0) {
                 state.data.milestones[dateStr].forEach((text, idx) => {
-                    listContainer.innerHTML += `
-                        <div class="milestone-item">
-                            <span>${text}</span>
-                            <button class="btn-delete" onclick="deleteMilestone('${dateStr}', ${idx})" title="Supprimer">✖</button>
-                        </div>
-                    `;
+                    const item = document.createElement('div');
+                    item.className = 'milestone-item';
+                    
+                    const spanText = document.createElement('span');
+                    spanText.textContent = text;
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'btn-icon-group';
+                    
+                    // ✏️ Bouton d'édition
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'btn-icon';
+                    editBtn.innerHTML = '✏️';
+                    editBtn.title = 'Éditer';
+                    editBtn.onclick = () => editMilestone(dateStr, idx);
+                    
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'btn-icon del';
+                    delBtn.innerHTML = '✖';
+                    delBtn.title = 'Supprimer';
+                    delBtn.onclick = () => deleteMilestone(dateStr, idx);
+                    
+                    actionsDiv.appendChild(editBtn);
+                    actionsDiv.appendChild(delBtn);
+                    
+                    item.appendChild(spanText);
+                    item.appendChild(actionsDiv);
+                    listContainer.appendChild(item);
                 });
             }
         }
 
+        function editMilestone(dateStr, idx) {
+            editingMilestoneIdx = idx;
+            document.getElementById('milestone-input').value = state.data.milestones[dateStr][idx];
+            document.getElementById('btn-save-milestone').innerText = "Mettre à jour";
+        }
+
         function closeMilestoneModal() {
             document.getElementById('milestone-modal').classList.add('hidden');
+            editingMilestoneIdx = null;
         }
 
         function saveMilestone() {
@@ -639,14 +711,30 @@
             
             if (!dateStr || !text) return;
             
-            const selectedDate = new Date(dateStr);
-            if (selectedDate > new Date()) {
+            // 🐛 CORRECTIF 1 : Sécurité Absolue sur la Naissance
+            const [ey, em, ed] = dateStr.split('-');
+            const [by, bm, bd] = state.birthdate.split('-');
+            const selectedDate = new Date(ey, em-1, ed);
+            const birthDate = new Date(by, bm-1, bd);
+            const today = new Date();
+            today.setHours(23,59,59,999);
+            
+            if (selectedDate > today) {
                 alert("Impossible de prévoir l'avenir ! Reste dans le passé ou le présent.");
+                return;
+            }
+            if (selectedDate < birthDate) {
+                alert("Tu ne peux pas ajouter d'événement avant ta naissance !");
                 return;
             }
 
             if (!state.data.milestones[dateStr]) state.data.milestones[dateStr] = [];
-            state.data.milestones[dateStr].push(text);
+            
+            if (editingMilestoneIdx !== null) {
+                state.data.milestones[dateStr][editingMilestoneIdx] = text;
+            } else {
+                state.data.milestones[dateStr].push(text);
+            }
             
             document.getElementById('milestone-input').value = ""; 
             refreshMilestoneList();
@@ -665,19 +753,154 @@
             if (state.mode === 'github') { pushGistData(); } else { saveLocalData(); }
         }
 
+        function setupGridDelegation() {
+            const grid = document.getElementById('life-grid');
+            const infoZone = document.getElementById('grid-hover-info');
+
+            grid.addEventListener('mouseover', (e) => {
+                if (window.matchMedia("(max-width: 600px)").matches) return; 
+                if (e.target.classList.contains('week-box')) {
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    const approxDate = getApproxDateForWeek(idx, state.birthdate);
+                    let text = `${moisNoms[approxDate.getMonth()]} ${approxDate.getFullYear()}`;
+                    
+                    if (window.currentMilestonesByWeek[idx]) {
+                        const events = window.currentMilestonesByWeek[idx].map(ev => ev.text).join(" & ");
+                        text += ` — ${events}`;
+                        infoZone.style.color = 'var(--accent-color)';
+                        infoZone.style.fontWeight = 'bold';
+                    } else {
+                        infoZone.style.color = 'var(--text-light)';
+                        infoZone.style.fontWeight = 'normal';
+                    }
+                    infoZone.innerText = text;
+                }
+            });
+
+            grid.addEventListener('click', (e) => {
+                if (window.matchMedia("(max-width: 600px)").matches) return;
+                if (e.target.classList.contains('past')) {
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    let defaultDate;
+                    if (window.currentMilestonesByWeek[idx]) {
+                        defaultDate = window.currentMilestonesByWeek[idx][0].date;
+                    } else {
+                        const targetDate = getApproxDateForWeek(idx, state.birthdate);
+                        defaultDate = targetDate.toISOString().split('T')[0];
+                    }
+                    openMilestoneModalWithDate(defaultDate);
+                }
+            });
+        }
+
+        function renderTimeline() {
+            const tlContainer = document.getElementById('timeline-content');
+            if(!tlContainer) return;
+            tlContainer.innerHTML = '';
+            
+            if (!state.data.milestones || Object.keys(state.data.milestones).length === 0) {
+                tlContainer.innerHTML = '<p style="color:var(--text-light); font-style:italic; text-align:center;">Aucun événement enregistré.</p>';
+                return;
+            }
+
+            const eventsByYear = {};
+            const sortedDates = Object.keys(state.data.milestones).sort((a, b) => new Date(b) - new Date(a));
+            
+            sortedDates.forEach(dateStr => {
+                const year = dateStr.split('-')[0];
+                if (!eventsByYear[year]) eventsByYear[year] = [];
+                eventsByYear[year].push(dateStr);
+            });
+
+            const currentYearStr = new Date().getFullYear().toString();
+
+            Object.keys(eventsByYear).sort((a,b) => b-a).forEach(year => {
+                const details = document.createElement('details');
+                details.className = 'month-group'; 
+                if (year === currentYearStr) details.open = true;
+
+                const summary = document.createElement('summary');
+                summary.className = 'month-title';
+                summary.innerHTML = `${year} <span class="month-icon">▼</span>`;
+                details.appendChild(summary);
+
+                const yearContent = document.createElement('div');
+                yearContent.className = 'month-content';
+
+                eventsByYear[year].forEach(dateStr => {
+                    const d = new Date(dateStr);
+                    const displayDate = `${d.getDate()} ${moisNoms[d.getMonth()]}`;
+                    
+                    state.data.milestones[dateStr].forEach((text, idx) => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'timeline-item';
+                        
+                        const dateSpan = document.createElement('div');
+                        dateSpan.className = 'timeline-date';
+                        dateSpan.textContent = displayDate;
+                        
+                        const textSpan = document.createElement('div');
+                        textSpan.className = 'timeline-text';
+                        textSpan.textContent = text;
+                        
+                        const actionsDiv = document.createElement('div');
+                        actionsDiv.className = 'timeline-actions';
+                        
+                        const actionBtn = document.createElement('button');
+                        actionBtn.className = 'action-link';
+                        actionBtn.style.marginLeft = '0';
+                        actionBtn.textContent = 'Gérer ce jour';
+                        actionBtn.onclick = () => openMilestoneModalWithDate(dateStr);
+                        
+                        actionsDiv.appendChild(actionBtn);
+                        
+                        itemDiv.appendChild(dateSpan);
+                        itemDiv.appendChild(textSpan);
+                        itemDiv.appendChild(actionsDiv);
+                        
+                        yearContent.appendChild(itemDiv);
+                    });
+                });
+
+                details.appendChild(yearContent);
+                tlContainer.appendChild(details);
+            });
+        }
+
         function renderMementoMori() {
             const birthDate = new Date(state.birthdate);
             const today = new Date();
-            const msPerWeek = 1000 * 60 * 60 * 24 * 7;
-            const weeksLived = Math.floor((today - birthDate) / msPerWeek);
+            
+            // Calcul exact des semaines vécues
+            const diffMs = today - birthDate;
+            const weeksLived = Math.floor(diffMs / 604800000);
             
             document.getElementById('memento-stats').innerText = `Tu as vécu ${weeksLived.toLocaleString('fr-FR')} semaines pleines.`;
 
+            // Mapping exact des dates sur l'index de la grille
             window.currentMilestonesByWeek = {};
             if (state.data.milestones) {
+                const [by, bm, bd] = state.birthdate.split('-');
+                const bDate = new Date(by, bm-1, bd);
+                
                 for (const [dateStr, eventsArr] of Object.entries(state.data.milestones)) {
-                    const eventDate = new Date(dateStr);
-                    const weekIdx = Math.floor((eventDate - birthDate) / msPerWeek);
+                    const [ey, em, ed] = dateStr.split('-');
+                    const eDate = new Date(ey, em-1, ed);
+                    
+                    let yearDiff = eDate.getFullYear() - bDate.getFullYear();
+                    const bDateInEventYear = new Date(bDate);
+                    bDateInEventYear.setFullYear(eDate.getFullYear());
+                    
+                    if (eDate < bDateInEventYear) {
+                        yearDiff--;
+                        bDateInEventYear.setFullYear(bDateInEventYear.getFullYear() - 1);
+                    }
+                    
+                    const daysSinceBirthdayThatYear = Math.floor((eDate - bDateInEventYear) / 86400000);
+                    const weekInYear = Math.floor(daysSinceBirthdayThatYear / 7);
+                    
+                    const weekIdx = (yearDiff * 52) + weekInYear;
+                    
                     if (weekIdx >= 0) {
                         if (!window.currentMilestonesByWeek[weekIdx]) window.currentMilestonesByWeek[weekIdx] = [];
                         eventsArr.forEach(e => window.currentMilestonesByWeek[weekIdx].push({ date: dateStr, text: e }));
@@ -698,36 +921,16 @@
                 for (let w = 0; w < 52; w++) {
                     const box = document.createElement('div');
                     box.className = 'week-box';
-                    
-                    const capturedIndex = currentWeekIndex;
-                    const approxDate = new Date(birthDate.getTime() + (capturedIndex * msPerWeek));
-                    const approxDateStr = `${moisNoms[approxDate.getMonth()]} ${approxDate.getFullYear()}`;
-                    let radarText = "";
+                    box.setAttribute('data-index', currentWeekIndex);
 
-                    if (capturedIndex <= weeksLived) {
-                        box.classList.add('past');
-                        box.classList.add('lived');
-                        box.onclick = () => openMilestoneModalForWeek(capturedIndex);
-                        
-                        if (window.currentMilestonesByWeek[capturedIndex]) {
+                    if (currentWeekIndex <= weeksLived) {
+                        box.classList.add('past', 'lived');
+                        if (window.currentMilestonesByWeek[currentWeekIndex]) {
                             box.classList.add('milestone');
-                            const events = window.currentMilestonesByWeek[capturedIndex];
-                            const allTexts = events.map(e => e.text).join(" & ");
-                            radarText = ` — ${allTexts}`;
                         }
                     } else {
                         box.classList.add('future');
                     }
-
-                    const displayInfo = () => {
-                        const infoZone = document.getElementById('grid-hover-info');
-                        infoZone.innerText = `${approxDateStr}${radarText}`;
-                        infoZone.style.color = radarText ? 'var(--gold-milestone)' : 'var(--text-light)';
-                        infoZone.style.fontWeight = radarText ? 'bold' : 'normal';
-                    };
-
-                    box.addEventListener('mouseenter', displayInfo);
-                    box.addEventListener('touchstart', (e) => { displayInfo(); }, {passive: true});
 
                     row.appendChild(box);
                     currentWeekIndex++;
@@ -740,6 +943,8 @@
                 fragment.appendChild(row);
             }
             grid.appendChild(fragment);
+            
+            renderTimeline();
         }
 
         function updateJournalFilters() {
@@ -766,7 +971,43 @@
             if(monthSet.has(currentMonthVal)) monthSelect.value = currentMonthVal;
         }
 
-        // --- 📂 NOUVELLE FONCTION JOURNAL (AVEC ACCORDÉONS) ---
+        // --- ÉDITION JOURNAL SANS PROMPT NATIF ---
+        let currentEditJournalKey = null;
+        let currentEditJournalYear = null;
+
+        function editJournalEntry(dateKey, year) {
+            currentEditJournalKey = dateKey;
+            currentEditJournalYear = year;
+            document.getElementById('edit-journal-input').value = state.data[dateKey][year];
+            document.getElementById('edit-journal-modal').classList.remove('hidden');
+        }
+
+        function closeEditJournal() {
+            document.getElementById('edit-journal-modal').classList.add('hidden');
+            currentEditJournalKey = null;
+            currentEditJournalYear = null;
+        }
+
+        function confirmEditJournal() {
+            const newText = document.getElementById('edit-journal-input').value.trim();
+            if(newText === "") {
+                delete state.data[currentEditJournalKey][currentEditJournalYear];
+                if(Object.keys(state.data[currentEditJournalKey]).length === 0) delete state.data[currentEditJournalKey];
+            } else {
+                state.data[currentEditJournalKey][currentEditJournalYear] = newText;
+            }
+            if (state.mode === 'github') pushGistData(); else saveLocalData();
+            closeEditJournal();
+        }
+
+        function deleteJournalEntry(dateKey, year) {
+            if(confirm(`Es-tu sûr de vouloir effacer ta réponse de ${year} ?`)) {
+                delete state.data[dateKey][year];
+                if(Object.keys(state.data[dateKey]).length === 0) delete state.data[dateKey];
+                if (state.mode === 'github') pushGistData(); else saveLocalData();
+            }
+        }
+
         function renderJournal() {
             const container = document.getElementById('journal-content');
             container.innerHTML = '';
@@ -781,10 +1022,17 @@
             const filterMonth = document.getElementById('filter-month').value;
 
             const today = new Date();
-            const currentM = today.getMonth() + 1; // Mois actuel (1-12)
+            const currentM = today.getMonth() + 1;
             const currentD = today.getDate();
             
-            // 1. Grouper les entrées par mois
+            function getDayOfYearBase(m, d) {
+                const date = new Date(2024, m - 1, d); 
+                const start = new Date(2024, 0, 0);
+                return Math.floor((date - start) / 86400000);
+            }
+            
+            const todayDayOfYear = getDayOfYearBase(currentM, currentD);
+
             const entriesByMonth = {};
             
             journalKeys.forEach(dateKey => {
@@ -803,7 +1051,7 @@
 
                 if (hasVisibleYears) {
                     if (!entriesByMonth[mStr]) entriesByMonth[mStr] = [];
-                    entriesByMonth[mStr].push({ dStr, yearsObj: visibleYearsObj });
+                    entriesByMonth[mStr].push({ dStr, dateKey, yearsObj: visibleYearsObj });
                 }
             });
 
@@ -812,26 +1060,19 @@
                 return;
             }
 
-            // 2. Trier les mois (le mois actuel en premier, puis on recule)
             const sortedMonths = Object.keys(entriesByMonth).sort((a, b) => {
                 const distA = (currentM - parseInt(a) + 12) % 12;
                 const distB = (currentM - parseInt(b) + 12) % 12;
                 return distA - distB;
             });
 
-            // 3. Affichage
             sortedMonths.forEach(mStr => {
                 const mNum = parseInt(mStr);
                 const monthName = moisNoms[mNum - 1];
                 
-                // Création de l'accordéon natif
                 const details = document.createElement('details');
                 details.className = 'month-group';
-                
-                // On ouvre par défaut si c'est le mois actuel ou si on a filtré un mois précis
-                if (mNum === currentM || filterMonth !== 'all') {
-                    details.open = true;
-                }
+                if (mNum === currentM || filterMonth !== 'all') details.open = true;
 
                 const summary = document.createElement('summary');
                 summary.className = 'month-title';
@@ -841,7 +1082,6 @@
                 const monthContent = document.createElement('div');
                 monthContent.className = 'month-content';
 
-                // Tri des jours à l'intérieur du mois (ordre décroissant)
                 const entries = entriesByMonth[mStr];
                 entries.sort((a, b) => parseInt(b.dStr) - parseInt(a.dStr));
 
@@ -849,31 +1089,56 @@
                     const dNum = parseInt(entry.dStr);
                     const displayDate = `${entry.dStr}/${mStr}`;
                     const targetQuestion = getQuestionFor(mNum, dNum);
-                    
                     const isToday = (mNum === currentM && dNum === currentD);
                     const badgeHtml = isToday ? '<span class="badge-today">Aujourd\'hui</span>' : '';
                     
-                    let entryHtml = `
+                    const entryWrapper = document.createElement('div');
+                    
+                    const header = document.createElement('div');
+                    header.innerHTML = `
                         <div class="journal-entry-header">
                             <span class="journal-entry-date">${displayDate}</span>
                             ${badgeHtml}
                         </div>
                         <div class="journal-entry-question">"${targetQuestion}"</div>
                     `;
+                    entryWrapper.appendChild(header);
 
                     const sortedYears = Object.keys(entry.yearsObj).sort((a, b) => b - a);
                     sortedYears.forEach(year => {
-                        entryHtml += `
-                            <div style="margin-bottom: 0.5rem; background: rgba(255,255,255,0.4); padding: 1rem; border-radius: 4px; border-left: 2px solid var(--border-color);">
-                                <strong style="color: var(--text-light); font-size: 0.85rem; display:block; margin-bottom:0.3rem;">${year}</strong> 
-                                <span style="font-family: var(--font-main); line-height:1.5;">${entry.yearsObj[year]}</span>
-                            </div>
-                        `;
+                        const block = document.createElement('div');
+                        block.style.cssText = "margin-bottom: 0.5rem; background: rgba(255,255,255,0.4); padding: 1rem; border-radius: 4px; border-left: 2px solid var(--border-color);";
+                        
+                        const titleLine = document.createElement('div');
+                        titleLine.style.display = "flex"; titleLine.style.justifyContent = "space-between";
+                        
+                        const strongYear = document.createElement('strong');
+                        strongYear.style.cssText = "color: var(--text-light); font-size: 0.85rem; font-weight:bold;";
+                        strongYear.textContent = year;
+                        
+                        const actionsDiv = document.createElement('div');
+                        
+                        const editBtn = document.createElement('button');
+                        editBtn.className = 'action-link'; editBtn.textContent = 'Éditer';
+                        editBtn.onclick = () => editJournalEntry(entry.dateKey, year);
+                        
+                        const delBtn = document.createElement('button');
+                        delBtn.className = 'action-link'; delBtn.style.color = '#b33939'; delBtn.textContent = 'Supprimer';
+                        delBtn.onclick = () => deleteJournalEntry(entry.dateKey, year);
+                        
+                        actionsDiv.appendChild(editBtn); actionsDiv.appendChild(delBtn);
+                        titleLine.appendChild(strongYear); titleLine.appendChild(actionsDiv);
+                        
+                        const textContent = document.createElement('div');
+                        textContent.style.cssText = "font-family: var(--font-main); line-height: 1.5; margin-top: 0.5rem; white-space: pre-wrap;";
+                        textContent.textContent = entry.yearsObj[year];
+
+                        block.appendChild(titleLine);
+                        block.appendChild(textContent);
+                        entryWrapper.appendChild(block);
                     });
 
-                    const entryDiv = document.createElement('div');
-                    entryDiv.innerHTML = entryHtml;
-                    monthContent.appendChild(entryDiv);
+                    monthContent.appendChild(entryWrapper);
                 });
 
                 details.appendChild(monthContent);
