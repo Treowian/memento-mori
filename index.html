@@ -86,18 +86,7 @@
         .memento-stats { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .memento-quote { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
         
-        /* 🐛 CORRECTIF : Le menu d'actions redevient "Sticky" (Fixé en haut au scroll) */
-        .memento-actions { 
-            display: flex; justify-content: space-between; align-items: flex-end; 
-            margin-bottom: 1rem; max-width: 800px; margin: 0 auto 1rem auto; 
-            flex-wrap: wrap; gap: 0.8rem;
-            position: sticky; top: 0; z-index: 50; 
-            background: rgba(246, 239, 232, 0.95); /* Fond légèrement transparent */
-            padding: 10px 0; border-bottom: 1px dashed rgba(164, 176, 179, 0.3);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        
+        .memento-actions { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; max-width: 800px; margin: 0 auto 0.5rem auto; flex-wrap: wrap; gap: 0.8rem; position: sticky; top: 0; z-index: 50; background: rgba(246, 239, 232, 0.95); padding: 10px 0; border-bottom: 1px dashed rgba(164, 176, 179, 0.3); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);}
         .grid-hover-info { font-family: var(--font-sans); font-size: 0.9rem; color: var(--text-light); height: 1.5rem; display: flex; align-items: flex-end; transition: color 0.2s ease; flex-grow: 1;}
         .btn-add-event { color: var(--navy-blue); font-weight: bold; padding: 0; margin-left: auto; }
         
@@ -169,19 +158,21 @@
         .timeline-text { font-family: var(--font-main); font-size: 1.2rem; line-height: 1.5; color: var(--text-color); }
         .timeline-actions { margin-top: 0.5rem; }
 
+        /* 🐛 Ajustements Mobile Millimétrés */
         @media (max-width: 600px) {
-            .container { padding: 1rem; }
-            .grid-container { justify-content: center; }
-            .year-row { gap: 1px; height: 5px; } 
-            .life-grid { gap: 1px; padding-right: 5px; } 
-            .week-box { width: 5px; height: 5px; pointer-events: none; } 
-            .week-box:nth-child(27) { margin-right: 4px; }
-            .year-marker { font-size: 0.65rem; }
-            .year-marker.left { width: 28px; margin-right: 4px; }
-            .year-marker.right { width: 14px; margin-left: 4px; }
-            .journal-filters { flex-direction: column; gap: 0.5rem; }
+            .container { padding: 1rem 0.5rem; } /* Réduction des marges latérales pour gagner de la place */
             
-            /* Ajustement de la barre d'action fixe sur mobile */
+            .year-row { gap: 1px; height: 4px; } /* Hauteur stricte à 4px pour correspondre aux bulles */
+            .life-grid { gap: 1px; padding-right: 0; } /* Supprime l'espace vide à droite */
+            
+            .week-box { width: 4px; height: 4px; pointer-events: none; } /* Bulle de 4px pour un ajustement parfait sur 320px+ */
+            .week-box:nth-child(27) { margin-right: 3px; }
+            
+            .year-marker { font-size: 0.55rem; }
+            .year-marker.left { width: 22px; margin-right: 4px; }
+            .year-marker.right { width: 12px; margin-left: 4px; }
+            
+            .journal-filters { flex-direction: column; gap: 0.5rem; }
             .memento-actions { flex-direction: column-reverse; align-items: flex-end; padding: 10px 0; }
             .grid-hover-info { width: 100%; align-items: flex-start; margin-top: 0.5rem; }
         }
@@ -771,6 +762,8 @@
         function setupGridDelegation() {
             const grid = document.getElementById('life-grid');
             const infoZone = document.getElementById('grid-hover-info');
+            const birthDate = new Date(state.birthdate);
+            const msPerWeek = 604800000;
 
             grid.addEventListener('mouseover', (e) => {
                 if (window.matchMedia("(max-width: 600px)").matches) return; 
