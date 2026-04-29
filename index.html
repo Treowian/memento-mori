@@ -86,21 +86,31 @@
         .memento-stats { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .memento-quote { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
         
-        .memento-actions { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; max-width: 800px; margin: 0 auto 0.5rem auto; flex-wrap: wrap; gap: 0.8rem;}
+        /* 🐛 CORRECTIF : Le menu d'actions redevient "Sticky" (Fixé en haut au scroll) */
+        .memento-actions { 
+            display: flex; justify-content: space-between; align-items: flex-end; 
+            margin-bottom: 1rem; max-width: 800px; margin: 0 auto 1rem auto; 
+            flex-wrap: wrap; gap: 0.8rem;
+            position: sticky; top: 0; z-index: 50; 
+            background: rgba(246, 239, 232, 0.95); /* Fond légèrement transparent */
+            padding: 10px 0; border-bottom: 1px dashed rgba(164, 176, 179, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
         .grid-hover-info { font-family: var(--font-sans); font-size: 0.9rem; color: var(--text-light); height: 1.5rem; display: flex; align-items: flex-end; transition: color 0.2s ease; flex-grow: 1;}
         .btn-add-event { color: var(--navy-blue); font-weight: bold; padding: 0; margin-left: auto; }
         
         .grid-container { width: 100%; overflow-x: auto; padding-bottom: 1rem; }
         .life-grid { display: flex; flex-direction: column; gap: 2px; width: max-content; margin: 0 auto; padding-right: 15px; }
         
-        /* 🐛 CORRECTIF UX : Fixation de la hauteur de ligne et bilatéralité */
-        .year-row { display: flex; gap: 2px; align-items: center; height: 10px; /* Force la hauteur à 10px pour stopper les décalages */ }
+        .year-row { display: flex; gap: 2px; align-items: center; height: 10px; }
         .year-marker { font-family: var(--font-sans); font-size: 0.75rem; color: var(--text-color); line-height: 1; white-space: nowrap; }
         .year-marker.left { width: 32px; text-align: right; margin-right: 8px; color: var(--text-light); }
         .year-marker.right { width: 16px; text-align: left; margin-left: 8px; font-weight: bold; }
         
         .week-box { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--border-color); background-color: transparent; box-sizing: border-box; transition: transform 0.1s; }
-        .week-box:nth-child(27) { margin-right: 12px; } /* Séparateur de mi-année (L'index est décalé à 27 à cause du marqueur gauche !) */
+        .week-box:nth-child(27) { margin-right: 12px; }
         .week-box.past { cursor: pointer; }
         .week-box.past:hover { transform: scale(1.5); z-index: 10; border-color: var(--navy-blue); }
         .week-box.future { cursor: default; }
@@ -162,18 +172,17 @@
         @media (max-width: 600px) {
             .container { padding: 1rem; }
             .grid-container { justify-content: center; }
-            .year-row { gap: 1px; height: 5px; /* Force la hauteur à 5px sur mobile */ } 
+            .year-row { gap: 1px; height: 5px; } 
             .life-grid { gap: 1px; padding-right: 5px; } 
             .week-box { width: 5px; height: 5px; pointer-events: none; } 
             .week-box:nth-child(27) { margin-right: 4px; }
-            
-            /* Ajustement des marqueurs pour les petits écrans */
             .year-marker { font-size: 0.65rem; }
             .year-marker.left { width: 28px; margin-right: 4px; }
             .year-marker.right { width: 14px; margin-left: 4px; }
-            
             .journal-filters { flex-direction: column; gap: 0.5rem; }
-            .memento-actions { flex-direction: column-reverse; align-items: flex-end; }
+            
+            /* Ajustement de la barre d'action fixe sur mobile */
+            .memento-actions { flex-direction: column-reverse; align-items: flex-end; padding: 10px 0; }
             .grid-hover-info { width: 100%; align-items: flex-start; margin-top: 0.5rem; }
         }
     </style>
@@ -762,8 +771,6 @@
         function setupGridDelegation() {
             const grid = document.getElementById('life-grid');
             const infoZone = document.getElementById('grid-hover-info');
-            const birthDate = new Date(state.birthdate);
-            const msPerWeek = 604800000;
 
             grid.addEventListener('mouseover', (e) => {
                 if (window.matchMedia("(max-width: 600px)").matches) return; 
@@ -925,7 +932,6 @@
                 row.className = 'year-row';
                 if (y > 0 && y % 5 === 0) row.style.marginTop = '6px';
 
-                // 🐛 CORRECTIF 2 : Marqueur Gauche (Année Calendaire)
                 const markerLeft = document.createElement('div');
                 markerLeft.className = 'year-marker left';
                 if ((y + 1) % 5 === 0) markerLeft.innerText = birthYear + y + 1;
@@ -949,7 +955,6 @@
                     currentWeekIndex++;
                 }
 
-                // 🐛 CORRECTIF 2 : Marqueur Droit (Âge)
                 const markerRight = document.createElement('div');
                 markerRight.className = 'year-marker right';
                 if ((y + 1) % 5 === 0) markerRight.innerText = (y + 1);
