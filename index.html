@@ -30,7 +30,6 @@
         body { background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-main); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .container { max-width: 800px; width: 100%; padding: 2rem; box-sizing: border-box; }
 
-        /* 🖋️ UNIFICATION DES TITRES */
         .section-title { font-weight: normal; font-size: 1.8rem; text-align: center; margin-top: 0; margin-bottom: 2rem; font-family: var(--font-main); color: var(--text-color); }
 
         nav { width: 100%; display: flex; justify-content: center; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
@@ -78,13 +77,7 @@
         .btn-today { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 12px; font-size: 0.75rem; padding: 0.3rem 0.8rem; cursor: pointer; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;}
         .btn-today:hover { background: var(--text-color); color: var(--bg-color); }
 
-        .history-container { max-width: 600px; margin: 0 auto 2rem auto; display: flex; flex-direction: column; gap: 1rem; }
-        .history-card { background: rgba(255, 255, 255, 0.4); padding: 1.5rem; border-radius: 4px; border-left: 3px solid var(--border-color); }
-        .history-year { font-family: var(--font-sans); color: var(--text-light); font-size: 0.85rem; margin-bottom: 0.5rem; font-weight: bold; display: block; }
-        .history-text { margin: 0; line-height: 1.6; font-size: 1.1rem; white-space: pre-wrap; }
-
         .memento-header { text-align: center; margin-bottom: 2rem; }
-        .memento-stats { font-size: 1.5rem; margin-bottom: 0.5rem; }
         .memento-quote { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
         
         .memento-actions { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; max-width: 800px; margin: 0 auto 0.5rem auto; flex-wrap: wrap; gap: 0.8rem; position: sticky; top: 0; z-index: 50; background: rgba(246, 239, 232, 0.95); padding: 10px 0; border-bottom: 1px dashed rgba(164, 176, 179, 0.3); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);}
@@ -128,7 +121,7 @@
         .journal-filters { display: flex; gap: 1rem; max-width: 600px; margin: 0 auto 2rem auto; justify-content: flex-start; }
         .journal-filters select { appearance: none; background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 0.5rem 1rem; border-radius: 4px; font-family: var(--font-sans); font-size: 0.9rem; cursor: pointer; outline: none; }
         .journal-filters select:hover { border-color: var(--text-color); }
-        .journal-empty { text-align: center; color: var(--text-light); font-style: italic; margin-top: 3rem; }
+        .journal-empty { text-align: center; color: var(--text-light); font-style: italic; margin-top: 3rem; font-size: 1.1rem; }
         .journal-list { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
         
         .month-group { width: 100%; border-bottom: 1px dashed var(--border-color); margin-bottom: 1rem; }
@@ -136,7 +129,7 @@
         .month-title::-webkit-details-marker { display: none; } 
         .month-icon { font-size: 0.7rem; transition: transform 0.3s ease; color: var(--navy-blue); }
         .month-group[open] .month-icon { transform: rotate(180deg); }
-        .month-content { padding-top: 1rem; display: flex; flex-direction: column; gap: 2rem; padding-bottom: 2rem;}
+        .month-content { padding-top: 1rem; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem;}
 
         .journal-entry-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.3rem; }
         .journal-entry-date { font-family: var(--font-sans); color: var(--accent-color); font-size: 1.1rem; font-weight: bold; }
@@ -150,32 +143,35 @@
         .invisible { visibility: hidden; pointer-events: none; }
         .error-msg { color: #b33939; font-size: 0.9rem; margin-top: 0.5rem; text-align: center; display: none; }
 
-        /* ⏳ Timeline Globale V2 + Barre de recherche */
         .timeline-section { width: 100%; max-width: 600px; margin: 3rem auto 2rem auto; border-top: 1px dashed var(--border-color); padding-top: 2.5rem; }
         
         .search-bar-wrapper { margin-bottom: 2rem; }
         .search-input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-sans); font-size: 1rem; background: rgba(255, 255, 255, 0.4); color: var(--text-color); box-sizing: border-box; outline: none; transition: border-color 0.2s;}
         .search-input:focus { border-color: var(--navy-blue); background: #fff; }
 
-        .timeline-item { border-left: 2px solid var(--gold-milestone); padding-left: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .timeline-item { border-left: 2px solid var(--gold-milestone); padding-left: 1.5rem; margin-bottom: 1.5rem; position: relative; }
         .timeline-item::before { content: ''; position: absolute; left: -6px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold-milestone); border: 2px solid var(--bg-color); }
         .timeline-date { font-family: var(--font-sans); font-weight: bold; font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 1px; }
         .timeline-text { font-family: var(--font-main); font-size: 1.1rem; line-height: 1.6; color: var(--text-color); white-space: pre-wrap; }
         .timeline-actions { margin-top: 0.5rem; }
 
-        /* 📱 Ajustements Mobile Millimétrés */
         @media (max-width: 600px) {
-            .container { padding: 1rem 0.2rem; } /* Marges réduites au maximum */
+            .container { padding: 1rem 0.2rem; } 
+            
             .year-row { gap: 1px; height: 5px; } 
             .life-grid { gap: 1px; padding-right: 0; } 
+            
             .week-box { width: 5px; height: 5px; pointer-events: none; } 
-            .week-box:nth-child(27) { margin-right: 6px; }
+            .week-box:nth-child(27) { margin-right: 6px; } 
+            
             .year-marker { font-size: 0.6rem; }
             .year-marker.left { width: 24px; margin-right: 4px; }
             .year-marker.right { width: 12px; margin-left: 4px; }
-            .journal-filters { flex-direction: column; gap: 0.5rem; padding: 0 1rem; }
-            .journal-actions, .journal-list { padding: 0 1rem; box-sizing: border-box; }
-            .timeline-section { padding: 2rem 1rem; box-sizing: border-box; }
+            
+            .journal-filters { flex-direction: column; gap: 0.5rem; padding: 0 1rem;}
+            .journal-actions, .journal-list { padding: 0 1rem; box-sizing: border-box;}
+            .timeline-section { padding: 2rem 1rem; box-sizing: border-box;}
+            
             .memento-actions { flex-direction: column-reverse; align-items: flex-end; padding: 10px 1rem; }
             .grid-hover-info { width: 100%; align-items: flex-start; margin-top: 0.5rem; }
         }
@@ -239,7 +235,7 @@
 
             <div id="view-memento" class="hidden">
                 <div class="memento-header">
-                    <div class="memento-stats" id="memento-stats">Tu as vécu X semaines pleines.</div>
+                    <div class="section-title memento-stats" id="memento-stats">Tu as vécu X semaines pleines.</div>
                     <div class="memento-quote">« Ce n’est pas que nous avons peu de temps, c’est que nous en perdons beaucoup. » — Sénèque</div>
                 </div>
                 <div class="memento-actions">
@@ -313,7 +309,7 @@
             "Comment vas-tu, vraiment ?", "Qu'est-ce qui t'a le plus appris depuis le début de l'année ?", "Y a-t-il quelque chose que tu devais faire et que tu n'as pas fait ?", "Qu'est-ce qui t'a surpris en bien cette année ?", "Qu'est-ce que tu veux absolument vivre avant la fin de l'année ?", "De quoi as-tu besoin pour recharger tes batteries ?", "Quel projet mérite que tu y reviens ?", "Qu'est-ce qui te pèse et que tu pourrais poser là maintenant ?", "Comment ton rapport au temps a-t-elle évolué ?", "Quelle intention veux-tu te fixer pour les 6 prochains mois ?", "Qu'est-ce qui te motive le plus en ce moment ?", "Y a-t-il quelque chose que tu fais depuis trop longtemps par inertie ?", "Qu'est-ce qui t'a surpris en toi cette année ?", "Quelle relation a évolué de manière inattendue ?", "Qu'est-ce que tu as appris sur tes propres limites ?", "Qu'est-ce qui vaut vraiment la peine d'être poursuivi ?", "Comment veux-tu finir cette année ?", "Qu'est-ce que tu ferais si tu savais que tu n'as plus que 6 mois ?", "Quelle chose simple te ferait du bien aujourd'hui ?", "Y a-t-il un aspect de ta vie que tu as trop négligé ?", "Qu'est-ce que tu veux moins faire ? Plus faire ?", "Quel est le plus beau moment de cette année jusqu'ici ?", "Qu'est-ce qui mérite que tu t'y arrêtes vraiment ?", "Qu'est-ce qui t'a redonné espoir récemment ?", "Quelle décision de cette année es-tu fier d'avoir prise ?", "Y a-t-il quelque chose que tu aurais dû décider plus tôt ?", "Qu'est-ce qui te manque pour te sentir pleinement vivant ?", "Quelle est la prochaine chose que tu veux créer, vivre ou accomplir ?", "Qu'est-ce que tu veux être capable de dire en fin d'année ?", "Quel serait ton idéal pour les prochains mois ?", "Qu'est-ce que tu veux laisser derrière toi ?",
             "Qu'est-ce que tu as appris récemment qui t'a changé le regard ?", "Quel domaine mérite que tu t'y plonges vraiment ?", "Quelle idée te travaille en ce moment ?", "Y a-t-il un sujet sur lequel tu as changé d'avis ?", "Quel livre t'a marqué et pourquoi ?", "Qu'est-ce que tu ne sais pas et que tu devrais peut-être apprendre ?", "Comment apprends-tu le mieux ?", "Quelle conversation t'a ouvert l'esprit récemment ?", "Y a-t-il une croyance que tu remets en question ?", "Qu'est-ce que tu trouves difficile à comprendre dans le monde ?", "Quel art ou discipline t'attire sans que tu aies osé t'y plonger ?", "Quelle connaissance te manque pour avancer dans ta vie ?", "Qu'est-ce que tu voudrais enseigner à quelqu'un ?", "Y a-t-il un sujet sur lequel tu préfères ne pas te forger d'opinion ?", "Quelle est la chose la plus contre-intuitive que tu aies apprise ?", "Qu'est-ce que tu pensais savoir et qui s'est révélé plus complexe ?", "Quel documentaire, podcast ou article t'a marqué ?", "Comment cultives-tu ta curiosité au quotidien ?", "Qu'est-ce que les gens très différents de toi t'ont appris ?", "Y a-t-il une langue, une culture que tu voudrais mieux comprendre ?", "Quelle sagesse ancienne te parle encore aujourd'hui ?", "Qu'est-ce que tu pourrais apprendre de quelqu'un que tu connais bien ?", "Quelle est la question que tu poses rarement mais qui révèle tout ?", "Qu'est-ce que tu n'as pas encore eu le courage de remettre en question ?", "Quel apprentissage a le plus changé ta façon de vivre ?", "Y a-t-il quelque chose que tu étudierais si tu recommençais ?", "Qu'est-ce qui mérite d'être pensé plus lentement ?", "Quelle est la leçon la plus difficile à intégrer vraiment ?", "Comment trouves-tu le temps d'apprendre dans ta vie actuelle ?", "Qu'est-ce qui t'a rendu plus humble intellectuellement ?",
             "De quoi as-tu peur que tu n'avoueras presque jamais ?", "Quelle partie de toi tu n'aimes pas encore tout à fait ?", "Qu'est-ce que tu évites de regarder en face ?", "Quel doute revient malgré toi ?", "Y a-t-il quelque chose en toi que tu caches aux autres ?", "Quelle est ta plus grande insécurité ?", "Qu'est-ce qui te réveille la nuit ?", "Quelle version de toi as-tu du mal à accepter ?", "Y a-t-il quelque chose que tu fais par peur plutôt que par choix ?", "Qu'est-ce que tu ne veux pas devenir ?", "Quelle est la chose dont tu as le plus honte ?", "Y a-t-il un aspect de ta vie que tu minimises pour les autres ?", "Qu'est-ce qui te met mal à l'aise chez les autres et qui te parle de toi ?", "Quelle est ta façon de fuir quand ça devient trop difficile ?", "Y a-t-il quelque chose que tu fais pour combler un vide ?", "Qu'est-ce qui te hante de façon récurrente ?", "Quelle blessure ancienne influence encore tes choix aujourd'hui ?", "Y a-t-il quelque chose que tu n'arrives pas à pardonner à quelqu'un ?", "Qu'est-ce que tu redoutes pour l'avenir ?", "Y a-t-il quelque chose que tu fais par automatisme et que tu voudrais changer ?", "Qu'est-ce qui te déçoit en toi parfois ?", "Quelle émotion tu n'arrives pas bien à exprimer ?", "Y a-t-il quelqu'un à qui tu en veux encore ?", "Qu'est-ce que tu n'arrives pas à lâcher ?", "Quelle partie de ta vie mérite plus d'honnêteté ?", "Y a-t-il quelque chose que tu fais pour les autres mais pas pour toi ?", "Qu'est-ce que tu aimerais que personne ne sache de toi ?", "Qu'est-ce que tu traverses en silence en ce moment ?", "Quelle est la chose la plus courageuse que tu pourrais faire pour toi maintenant ?", "Y a-t-il quelque chose que tu gardes par peur de la perte et non par amour ?", "Qu'est-ce qui mérite d'être guéri en toi ?",
-            "Quel sens veux-tu donner à ta vie ?", "Pour quoi ou pour qui te lèves-tu le matin ?", "Qu'est-ce que tu veux laisser après toi ?", "Quelle est ta mission, si tu en as une ?", "Qu'est-ce qui compte vraiment quand tout le reste disparaît ?", "Comment veux-tu qu'on se souvienne de toi ?", "Y a-t-il quelque chose que tu fais qui contribue au bien commun ?", "Quelle trace veux-tu laisser dans la vie des gens que tu côtoies ?", "Si tu pouvais transmettre une seule chose, ce serait quoi ?", "Qu'est-ce qui te dépasse et te fait sentir partie de quelque chose de plus grand ?", "Quelle cause mérite ton engagement ?", "Qu'est-ce que ta mort rendrait visible de ta vie ?", "Y a-t-il quelque chose que tu fais qui n'a pas de sens pour toi ?", "Quel héritage veux-tu construire ?", "Qu'est-ce qui survivra à ta mémoire ?", "Si tu disparaissais demain, de quoi aurais-tu aimé avoir plus fait ?", "Qu'est-ce que tu fais qui va au-delà de toi-même ?", "Quelle est ta responsabilité envers les autres ?", "Y a-t-il quelque chose que tu regrettes de ne pas avoir dit à quelqu'un ?", "Qu'est-ce qui te connecte à quelque chose de plus grand que toi ?", "Quel est le fil conducteur de ta vie ?", "Si taড়িয়ে était un message, quel serait-il ?", "Qu'est-ce que tu veux transmettre à la génération suivante ?", "Y a-t-il quelque chose que tu fais pour l'éternité et non pour l'instant ?", "Qu'est-ce qui survivrait si tout s'effondrait autour de toi ?", "Quel est le legs le plus important que tu aies reçu ?", "Qu'est-ce que tu dois encore accomplir pour te sentir en paix ?", "Y a-t-il quelque chose que tu attends encore de la vie ?", "Quelle est la prochaine grande chose que tu veux construire ?", "Qu'est-ce qui te donne le sentiment d'avoir bien vécu ?",
+            "Quel sens veux-tu donner à ta vie ?", "Pour quoi ou pour qui te lèves-tu le matin ?", "Qu'est-ce que tu veux laisser après toi ?", "Quelle est ta mission, si tu en as une ?", "Qu'est-ce qui compte vraiment quand tout le reste disparaît ?", "Comment veux-tu qu'on se souvienne de toi ?", "Y a-t-il quelque chose que tu fais qui contribue au bien commun ?", "Quelle trace veux-tu laisser dans la vie des gens que tu côtoies ?", "Si tu pouvais transmettre une seule chose, ce serait quoi ?", "Qu'est-ce qui te dépasse et te fait sentir partie de quelque chose de plus grand ?", "Quelle cause mérite ton engagement ?", "Qu'est-ce que ta mort rendrait visible de ta vie ?", "Y a-t-il quelque chose que tu fais qui n'a pas de sens pour toi ?", "Quel héritage veux-tu construire ?", "Qu'est-ce qui survivra à ta mémoire ?", "Si tu disparaissais demain, de quoi aurais-tu aimé avoir plus fait ?", "Qu'est-ce que tu fais qui va au-delà de toi-même ?", "Quelle est ta responsabilité envers les autres ?", "Y a-t-il quelque chose que tu regrettes de ne pas avoir dit à quelqu'un ?", "Qu'est-ce qui te connecte à quelque chose de plus grand que toi ?", "Quel est le fil conducteur de ta vie ?", "Si ta vie était un message, quel serait-il ?", "Qu'est-ce que tu veux transmettre à la génération suivante ?", "Y a-t-il quelque chose que tu fais pour l'éternité et non pour l'instant ?", "Qu'est-ce qui survivrait si tout s'effondrait autour de toi ?", "Quel est le legs le plus important que tu aies reçu ?", "Qu'est-ce que tu dois encore accomplir pour te sentir en paix ?", "Y a-t-il quelque chose que tu attends encore de la vie ?", "Quelle est la prochaine grande chose que tu veux construire ?", "Qu'est-ce qui te donne le sentiment d'avoir bien vécu ?",
             "Comment résumerais-tu cette année en un mot ?", "Qu'est-ce que cette année t'a coûté ? Qu'est-ce qu'elle t'a donné ?", "Quelle est la décision de cette année dont tu es le plus fier ?", "Qu'est-ce que tu veux absolument ne pas répéter l'an prochain ?", "Quelle rencontre de cette année a compté ?", "Qu'est-ce qui a changé dans ta façon de voir les choses ?", "Quelle est la chose la plus inattendue qui t'est arrivée ?", "Comment as-tu grandi cette année ?", "Qu'est-ce que tu veux emporter avec toi dans la prochaine année ?", "Quelle est ta plus grande fierté de cette année ?", "Qu'est-ce que tu aurais pu faire mieux ?", "Comment ta relation au temps a-t-elle évolué ?", "Qu'est-ce qui t'a aidé à traverser les moments difficiles ?", "Quelle est la plus belle chose que tu aies créée ou contribué à créer ?", "Qu'est-ce qui mérite d'être célébré, même si tu ne l'as pas fait ?", "Comment veux-tu commencer la prochaine année ?", "Y a-t-il quelque chose que tu veux te promettre pour l'an prochain ?", "Quel mot veux-tu que définisse ta prochaine année ?", "Qu'est-ce que tu espères encore accomplir dans ta vie ?", "Si tu pouvais envoyer un message à ton moi de dans 10 ans, ce serait quoi ?", "Comment as-tu pris soin de toi cette année ?", "Qu'est-ce qui t'a ancré quand tout allait trop vite ?", "Quel est le plus beau moment de cette année ?", "Comment ta relation aux autres a-t-elle évolué cette année ?", "Qu'est-ce que tu aimes dans qui tu es en train de devenir ?", "Y a-t-il quelque chose que tu veux absolument vivre l'an prochain ?", "Qu'est-ce que tu as appris sur toi-même que tu ne savais pas début d'année ?", "Quelle est la prochaine version de toi-même que tu veux rencontrer ?", "Qu'est-ce qui mérite que tu lui dises au revoir cette année ?", "Comment veux-tu traverser le temps qui te reste ?", "Qu'est-ce qui rend ta vie digne d'être vécue ?"
         ];
         const leapYearQuestion = "Tu vis un jour qui n'existe qu'une fois tous les 4 ans. Qu'est-ce que tu ferais si chaque jour était aussi rare ?";
@@ -768,8 +764,6 @@
         function setupGridDelegation() {
             const grid = document.getElementById('life-grid');
             const infoZone = document.getElementById('grid-hover-info');
-            const birthDate = new Date(state.birthdate);
-            const msPerWeek = 604800000;
 
             grid.addEventListener('mouseover', (e) => {
                 if (window.matchMedia("(max-width: 600px)").matches) return; 
@@ -807,7 +801,6 @@
             });
         }
 
-        // 🔍 FONCTION DE RECHERCHE DES ÉVÉNEMENTS
         function filterTimeline() {
             const query = document.getElementById('search-timeline').value.toLowerCase();
             const groups = document.querySelectorAll('#timeline-content .month-group');
@@ -828,7 +821,7 @@
 
                 if (hasVisibleItem) {
                     group.style.display = 'block';
-                    if (query !== "") group.open = true; // Déplie auto si on cherche
+                    if (query !== "") group.open = true; 
                 } else {
                     group.style.display = 'none';
                 }
@@ -955,16 +948,19 @@
             grid.innerHTML = '';
             const fragment = document.createDocumentFragment();
             let currentWeekIndex = 0;
-            const birthYear = new Date(state.birthdate).getFullYear();
 
             for (let y = 0; y < 80; y++) {
                 const row = document.createElement('div');
                 row.className = 'year-row';
                 if (y > 0 && y % 5 === 0) row.style.marginTop = '6px';
 
+                // 🐛 CORRECTIF : Le label de gauche reflète l'année calendaire exacte de la première bulle de la ligne
                 const markerLeft = document.createElement('div');
                 markerLeft.className = 'year-marker left';
-                if ((y + 1) % 5 === 0) markerLeft.innerText = birthYear + y + 1;
+                if ((y + 1) % 5 === 0) {
+                    const firstBubbleDate = getApproxDateForWeek(currentWeekIndex, state.birthdate);
+                    markerLeft.innerText = firstBubbleDate.getFullYear();
+                }
                 row.appendChild(markerLeft);
 
                 for (let w = 0; w < 52; w++) {
