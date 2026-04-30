@@ -30,26 +30,28 @@
         body { background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-main); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .container { max-width: 800px; width: 100%; padding: 2rem; box-sizing: border-box; }
 
-        nav { width: 100%; display: flex; justify-content: center; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; }
+        /* 🖋️ UNIFICATION DES TITRES */
+        h1, h2, h3, .section-title { font-weight: normal; font-size: 1.8rem; text-align: center; margin-top: 0; margin-bottom: 2rem; font-family: var(--font-main); color: var(--text-color); }
+        .memento-stats { font-size: 1.5rem; margin-bottom: 0.5rem; text-align: center; }
+
+        nav { width: 100%; display: flex; justify-content: center; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
         .nav-item { cursor: pointer; color: var(--text-light); text-decoration: none; padding-bottom: 0.5rem; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
         .nav-item:hover, .nav-item.active { color: var(--text-color); border-bottom-color: var(--text-color); font-weight: bold; }
 
-        h1 { font-weight: normal; font-size: 2.2rem; text-align: center; margin-top: 0; margin-bottom: 2rem; }
-
         .setup-form { display: flex; flex-direction: column; gap: 1rem; max-width: 600px; margin: 0 auto; background: rgba(255, 255, 255, 0.3); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); }
-        .setup-form label { font-style: italic; font-size: 0.95rem; margin-top: 0.5rem;}
-        .setup-form input { font-family: var(--font-sans); padding: 0.8rem; border: 1px solid var(--border-color); background: transparent; border-radius: 4px; font-size: 0.95rem; outline: none; }
+        .setup-form label { font-style: italic; font-size: 1rem; margin-top: 0.5rem;}
+        .setup-form input { font-family: var(--font-sans); padding: 0.8rem; border: 1px solid var(--border-color); background: transparent; border-radius: 4px; font-size: 1rem; outline: none; }
         .github-section { border-top: 1px dashed var(--border-color); padding-top: 1.5rem; margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;}
 
-        .question-card { background: #fdfbf7; padding: 2rem; border-radius: 4px; max-width: 600px; margin: 0 auto 2rem auto; box-shadow: 0 4px 20px rgba(44, 40, 37, 0.05); border: 1px solid var(--border-color); position: relative;}
+        .question-card { background: #fdfbf7; padding: 2.5rem; border-radius: 4px; max-width: 600px; margin: 0 auto 2rem auto; box-shadow: 0 4px 20px rgba(44, 40, 37, 0.05); border: 1px solid var(--border-color); position: relative;}
         
         .date-selector-wrapper { text-align: center; margin-bottom: 1rem; position: relative; }
-        .current-date { font-family: var(--font-sans); color: var(--text-light); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.6rem; border-radius: 4px; transition: background 0.2s;}
+        .current-date { font-family: var(--font-sans); color: var(--text-light); font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.6rem; border-radius: 4px; transition: background 0.2s;}
         .current-date:hover { background: rgba(0,0,0,0.05); }
         
         .calendar-dropdown { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 280px; background: #fdfbf7; border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 1rem; z-index: 100; margin-top: 0.5rem; display: none; }
         .calendar-dropdown.active { display: block; }
-        .cal-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-sans); font-weight: bold; margin-bottom: 1rem; font-size: 0.85rem;}
+        .cal-header { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-sans); font-weight: bold; margin-bottom: 1rem; font-size: 0.9rem;}
         .cal-btn { background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 1.2rem; padding: 0.2rem 0.5rem; border-radius: 4px;}
         .cal-btn:hover { background: rgba(0,0,0,0.05); color: var(--text-color); }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.2rem; text-align: center; font-family: var(--font-sans); font-size: 0.85rem;}
@@ -62,122 +64,124 @@
         .cal-day.has-data::after { content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background-color: var(--accent-color); }
         .cal-day.selected.has-data::after { background-color: var(--bg-color); }
 
-        /* 🐛 CORRECTIF TYPOGRAPHIE : Polices affinées et adoucies */
-        .question-text { font-size: 1.5rem; line-height: 1.4; margin: 0 0 2rem 0; font-style: italic; text-align: center; }
-        textarea { width: 100%; min-height: 120px; background: transparent; border: none; border-bottom: 2px dashed var(--border-color); font-family: var(--font-main); font-size: 1.05rem; color: var(--text-color); resize: none; outline: none; line-height: 1.6; padding: 0.5rem 0; overflow: hidden; transition: border-color 0.3s ease; }
+        .question-text { font-size: 1.8rem; line-height: 1.4; margin: 0 0 2rem 0; font-style: italic; text-align: center; }
+        textarea { width: 100%; min-height: 120px; background: transparent; border: none; border-bottom: 2px dashed var(--border-color); font-family: var(--font-main); font-size: 1.1rem; color: var(--text-color); resize: none; outline: none; line-height: 1.6; padding: 0.5rem 0; overflow: hidden; transition: border-color 0.3s ease; }
         textarea:focus { border-bottom-color: var(--accent-color); }
 
-        .btn-primary { font-family: var(--font-main); background-color: var(--text-color); color: var(--bg-color); border: none; padding: 0.9rem 1.8rem; font-size: 1rem; cursor: pointer; border-radius: 4px; margin-top: 1.5rem; transition: background 0.3s ease; display: block; width: 100%; }
+        .btn-primary { font-family: var(--font-main); background-color: var(--text-color); color: var(--bg-color); border: none; padding: 1rem 2rem; font-size: 1.1rem; cursor: pointer; border-radius: 4px; margin-top: 1.5rem; transition: background 0.3s ease; display: block; width: 100%; }
         .btn-primary:hover:not(:disabled) { opacity: 0.9; }
-        .btn-secondary { background: transparent; border: 1px solid var(--text-color); color: var(--text-color); padding: 0.7rem 1.2rem; border-radius: 4px; cursor: pointer; font-family: var(--font-main); font-size: 0.9rem; transition: all 0.2s; width: 100%; margin-top: 0.5rem;}
+        .btn-secondary { background: transparent; border: 1px solid var(--text-color); color: var(--text-color); padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-family: var(--font-main); font-size: 1rem; transition: all 0.2s; width: 100%; margin-top: 0.5rem;}
         .btn-secondary:hover { background: var(--text-color); color: var(--bg-color); }
 
         .nav-days { display: flex; justify-content: space-between; align-items: center; margin: 0 auto 1rem auto; max-width: 600px; min-height: 30px; }
-        .nav-btn { background: none; border: none; color: var(--text-light); font-size: 0.85rem; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+        .nav-btn { background: none; border: none; color: var(--text-light); font-size: 0.9rem; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
         .nav-btn:hover { color: var(--accent-color); }
-        .btn-today { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 12px; font-size: 0.7rem; padding: 0.3rem 0.8rem; cursor: pointer; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;}
+        .btn-today { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 12px; font-size: 0.75rem; padding: 0.3rem 0.8rem; cursor: pointer; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;}
         .btn-today:hover { background: var(--text-color); color: var(--bg-color); }
 
-        .history-container { max-width: 600px; margin: 0 auto 2rem auto; display: flex; flex-direction: column; gap: 1rem; }
-        .history-card { background: rgba(255, 255, 255, 0.4); padding: 1.2rem; border-radius: 4px; border-left: 3px solid var(--border-color); }
-        .history-year { font-family: var(--font-sans); color: var(--text-light); font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: bold; display: block; }
-        .history-text { margin: 0; line-height: 1.5; font-size: 1rem; white-space: pre-wrap; }
-
-        .memento-header { text-align: center; margin-bottom: 1.5rem; }
-        .memento-stats { font-size: 1.3rem; margin-bottom: 0.5rem; }
-        .memento-quote { font-style: italic; color: var(--text-light); font-size: 1rem; }
+        .memento-header { text-align: center; margin-bottom: 2rem; }
+        .memento-quote { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
         
-        /* 🐛 CORRECTIF UX : Menu d'actions Sticky (Reste collé en haut lors du scroll) */
-        .memento-actions { 
-            display: flex; justify-content: space-between; align-items: flex-end; 
-            margin-bottom: 1rem; max-width: 800px; margin: 0 auto 1rem auto; 
-            flex-wrap: wrap; gap: 0.8rem;
-            position: sticky; top: 0; z-index: 50; 
-            background: rgba(246, 239, 232, 0.95); /* Couleur parchemin très légèrement transparente */
-            padding: 10px 0; border-bottom: 1px dashed rgba(164, 176, 179, 0.3);
-            backdrop-filter: blur(5px); /* Petit effet de flou élégant */
-        }
-        
-        .grid-hover-info { font-family: var(--font-sans); font-size: 0.85rem; color: var(--text-light); height: 1.5rem; display: flex; align-items: flex-end; transition: color 0.2s ease; flex-grow: 1;}
+        .memento-actions { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; max-width: 800px; margin: 0 auto 0.5rem auto; flex-wrap: wrap; gap: 0.8rem; position: sticky; top: 0; z-index: 50; background: rgba(246, 239, 232, 0.95); padding: 10px 0; border-bottom: 1px dashed rgba(164, 176, 179, 0.3); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);}
+        .grid-hover-info { font-family: var(--font-sans); font-size: 0.9rem; color: var(--text-light); height: 1.5rem; display: flex; align-items: flex-end; transition: color 0.2s ease; flex-grow: 1;}
         .btn-add-event { color: var(--navy-blue); font-weight: bold; padding: 0; margin-left: auto; }
         
         .grid-container { width: 100%; overflow-x: auto; padding-bottom: 1rem; }
         .life-grid { display: flex; flex-direction: column; gap: 2px; width: max-content; margin: 0 auto; padding-right: 15px; }
         
-        .year-row { display: flex; gap: 2px; align-items: center; }
+        .year-row { display: flex; gap: 2px; align-items: center; height: 10px; }
+        .year-marker { font-family: var(--font-sans); font-size: 0.75rem; color: var(--text-color); line-height: 1; white-space: nowrap; }
+        .year-marker.left { width: 32px; text-align: right; margin-right: 8px; color: var(--text-light); }
+        .year-marker.right { width: 16px; text-align: left; margin-left: 8px; font-weight: bold; }
+        
         .week-box { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--border-color); background-color: transparent; box-sizing: border-box; transition: transform 0.1s; }
-        .week-box:nth-child(26) { margin-right: 12px; }
+        .week-box:nth-child(27) { margin-right: 12px; }
         .week-box.past { cursor: pointer; }
         .week-box.past:hover { transform: scale(1.5); z-index: 10; border-color: var(--navy-blue); }
         .week-box.future { cursor: default; }
         .week-box.lived { background-color: var(--navy-blue); border-color: var(--navy-blue); }
         .week-box.milestone { background-color: var(--gold-milestone); border-color: var(--gold-milestone); box-shadow: 0 0 5px rgba(212, 175, 55, 0.6); }
-        .year-marker { width: 24px; font-family: var(--font-sans); font-size: 0.7rem; color: var(--text-color); margin-left: 8px; text-align: right; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--bg-color); padding: 2rem; border-radius: 8px; width: 90%; max-width: 450px; border: 1px solid var(--border-color); box-shadow: 0 15px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column;}
-        .modal-title { font-family: var(--font-sans); color: var(--navy-blue); font-weight: bold; margin: 0 0 1.5rem 0; font-size: 1.1rem;}
-        .modal-input { width: 100%; font-family: var(--font-main); font-size: 1.05rem; padding: 0.5rem 0; border: none; border-bottom: 2px solid var(--border-color); background: transparent; outline: none; margin-bottom: 1.5rem; color: var(--text-color); box-sizing: border-box; resize: none;}
+        .modal-title { font-family: var(--font-sans); color: var(--navy-blue); font-weight: bold; margin: 0 0 1.5rem 0; font-size: 1.2rem;}
+        .modal-input { width: 100%; font-family: var(--font-main); font-size: 1.1rem; padding: 0.5rem 0; border: none; border-bottom: 2px solid var(--border-color); background: transparent; outline: none; margin-bottom: 1.5rem; color: var(--text-color); box-sizing: border-box; resize: none;}
         .modal-input:focus { border-bottom-color: var(--gold-milestone); }
         .modal-input[type="date"] { font-family: var(--font-sans); }
-        .modal-label { font-size: 0.8rem; color: var(--text-light); font-family: var(--font-sans); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 1px;}
+        .modal-label { font-size: 0.85rem; color: var(--text-light); font-family: var(--font-sans); margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 1px;}
         .modal-buttons { display: flex; gap: 1rem; margin-bottom: 1rem;}
         
         .milestone-list-container { max-height: 150px; overflow-y: auto; border-top: 1px dashed var(--border-color); padding-top: 1rem; display: flex; flex-direction: column; gap: 0.8rem;}
-        .milestone-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 0.8rem; border-radius: 4px; border-left: 3px solid var(--gold-milestone); font-family: var(--font-main); font-size: 0.95rem;}
+        .milestone-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 0.8rem; border-radius: 4px; border-left: 3px solid var(--gold-milestone); font-family: var(--font-main); font-size: 1.1rem;}
         
         .btn-icon-group { display: flex; gap: 0.5rem; }
-        .btn-icon { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0 0.3rem; opacity: 0.7; transition: opacity 0.2s;}
+        .btn-icon { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0 0.3rem; opacity: 0.7; transition: opacity 0.2s;}
         .btn-icon:hover { opacity: 1; }
         .btn-icon.del { color: #b33939; }
 
         .journal-actions { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto 2rem auto; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
         .journal-filters { display: flex; gap: 1rem; max-width: 600px; margin: 0 auto 2rem auto; justify-content: flex-start; }
-        .journal-filters select { appearance: none; background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 0.5rem 1rem; border-radius: 4px; font-family: var(--font-sans); font-size: 0.85rem; cursor: pointer; outline: none; }
+        .journal-filters select { appearance: none; background: transparent; border: 1px solid var(--border-color); color: var(--text-color); padding: 0.5rem 1rem; border-radius: 4px; font-family: var(--font-sans); font-size: 0.9rem; cursor: pointer; outline: none; }
         .journal-filters select:hover { border-color: var(--text-color); }
-        .journal-empty { text-align: center; color: var(--text-light); font-style: italic; margin-top: 3rem; font-size: 0.95rem;}
+        .journal-empty { text-align: center; color: var(--text-light); font-style: italic; margin-top: 3rem; font-size: 1.1rem; }
         .journal-list { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
         
+        /* 📂 Styles UNIFIÉS pour Accordéons (Journal & Timeline) */
         .month-group { width: 100%; border-bottom: 1px dashed var(--border-color); margin-bottom: 1rem; }
-        .month-title { font-family: var(--font-sans); font-size: 1.15rem; font-weight: 600; color: var(--text-color); cursor: pointer; padding: 1rem 0; display: flex; align-items: center; gap: 0.5rem; list-style: none; }
+        .month-title { font-family: var(--font-sans); font-size: 1.2rem; font-weight: 600; color: var(--text-color); cursor: pointer; padding: 1rem 0; display: flex; align-items: center; gap: 0.5rem; list-style: none; }
         .month-title::-webkit-details-marker { display: none; } 
-        .month-icon { font-size: 0.65rem; transition: transform 0.3s ease; color: var(--navy-blue); }
+        .month-icon { font-size: 0.7rem; transition: transform 0.3s ease; color: var(--navy-blue); }
         .month-group[open] .month-icon { transform: rotate(180deg); }
         .month-content { padding-top: 1rem; display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 2rem;}
 
         .journal-entry-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.3rem; }
-        .journal-entry-date { font-family: var(--font-sans); color: var(--accent-color); font-size: 1rem; font-weight: bold; }
-        .journal-entry-question { font-style: italic; color: var(--text-color); margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.4; border-left: 2px solid var(--accent-color); padding-left: 0.8rem;}
-        .badge-today { background: var(--text-color); color: var(--bg-color); font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 12px; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px;}
+        .journal-entry-date { font-family: var(--font-sans); color: var(--accent-color); font-size: 1.1rem; font-weight: bold; }
+        .journal-entry-question { font-style: italic; color: var(--text-color); margin-bottom: 1rem; font-size: 1.1rem; line-height: 1.4; border-left: 2px solid var(--accent-color); padding-left: 0.8rem;}
+        .badge-today { background: var(--text-color); color: var(--bg-color); font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 12px; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px;}
         
-        .action-link { font-family: var(--font-sans); font-size: 0.75rem; color: var(--accent-color); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; margin-left: 0.5rem;}
+        .action-link { font-family: var(--font-sans); font-size: 0.8rem; color: var(--accent-color); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; margin-left: 0.5rem;}
         .action-link:hover { opacity: 0.8; }
 
         .hidden { display: none !important; visibility: hidden; }
         .invisible { visibility: hidden; pointer-events: none; }
-        .error-msg { color: #b33939; font-size: 0.85rem; margin-top: 0.5rem; text-align: center; display: none; }
+        .error-msg { color: #b33939; font-size: 0.9rem; margin-top: 0.5rem; text-align: center; display: none; }
 
+        /* ⏳ Timeline Globale V2 */
         .timeline-section { width: 100%; max-width: 600px; margin: 3rem auto 2rem auto; border-top: 1px dashed var(--border-color); padding-top: 2.5rem; }
-        .timeline-main-title { font-family: var(--font-main); font-size: 1.5rem; text-align: center; margin-bottom: 2rem; font-style: italic; color: var(--text-color); }
         
+        /* 🔍 Barre de recherche */
+        .search-bar-wrapper { margin-bottom: 2rem; }
+        .search-input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-sans); font-size: 1rem; background: rgba(255, 255, 255, 0.4); color: var(--text-color); box-sizing: border-box; outline: none; transition: border-color 0.2s;}
+        .search-input:focus { border-color: var(--navy-blue); background: #fff; }
+
         .timeline-item { border-left: 2px solid var(--gold-milestone); padding-left: 1.5rem; margin-bottom: 1.5rem; position: relative; }
         .timeline-item::before { content: ''; position: absolute; left: -6px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold-milestone); border: 2px solid var(--bg-color); }
-        .timeline-date { font-family: var(--font-sans); font-weight: bold; font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 1px; }
-        .timeline-text { font-family: var(--font-main); font-size: 1.05rem; line-height: 1.5; color: var(--text-color); }
+        .timeline-date { font-family: var(--font-sans); font-weight: bold; font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 1px; }
+        /* UNIFICATION TYPO : Même style que le journal */
+        .timeline-text { font-family: var(--font-main); font-size: 1.1rem; line-height: 1.6; color: var(--text-color); white-space: pre-wrap; }
         .timeline-actions { margin-top: 0.5rem; }
 
-        /* Mobile Adjustments */
+        /* 📱 Ajustements Mobile Millimétrés */
         @media (max-width: 600px) {
-            .container { padding: 1rem; }
-            h1 { font-size: 1.8rem; }
-            .question-text { font-size: 1.3rem; margin-bottom: 1.5rem;}
-            .year-row { gap: 1px; } 
-            .life-grid { gap: 1px; padding-right: 5px; } 
+            /* On enlève le padding latéral pour gagner de la place */
+            .container { padding: 1rem 0.2rem; } 
+            
+            .year-row { gap: 1px; height: 5px; } 
+            .life-grid { gap: 1px; padding-right: 0; } 
+            
+            /* Les bulles font 5px + 1px de gap = 6px * 52 = 312px. Ça rentre parfaitement ! */
             .week-box { width: 5px; height: 5px; pointer-events: none; } 
-            .week-box:nth-child(26) { margin-right: 4px; }
-            .year-marker { font-size: 0.6rem; margin-left: 4px; width: 15px; }
-            .journal-filters { flex-direction: column; gap: 0.5rem; }
-            .memento-actions { flex-direction: column-reverse; align-items: flex-end; padding: 10px 0;}
+            .week-box:nth-child(27) { margin-right: 6px; } /* Espace central réduit */
+            
+            .year-marker { font-size: 0.6rem; }
+            .year-marker.left { width: 24px; margin-right: 4px; }
+            .year-marker.right { width: 12px; margin-left: 4px; }
+            
+            .journal-filters { flex-direction: column; gap: 0.5rem; padding: 0 1rem;}
+            .journal-actions, .journal-list { padding: 0 1rem; box-sizing: border-box;}
+            .timeline-section { padding: 2rem 1rem; box-sizing: border-box;}
+            
+            .memento-actions { flex-direction: column-reverse; align-items: flex-end; padding: 10px 1rem; }
             .grid-hover-info { width: 100%; align-items: flex-start; margin-top: 0.5rem; }
         }
     </style>
@@ -187,12 +191,12 @@
     <div id="app" class="container">
         
         <div id="setup-screen" class="setup-form">
-            <h1>Memento Mori</h1>
+            <h1 class="section-title">Memento Mori</h1>
             <label>Date de naissance (Obligatoire) :</label> 
             <input type="date" id="birthdate" required>
             <button class="btn-primary" onclick="startLocalMode()">Utiliser sans compte (Local)</button>
             <div class="github-section">
-                <p style="font-size: 0.85rem; color: var(--text-light); margin:0;">🔒 Optionnel : Synchroniser avec GitHub Gist.</p>
+                <p style="font-size: 0.9rem; color: var(--text-light); margin:0;">🔒 Optionnel : Synchroniser avec GitHub Gist.</p>
                 <label>ID du Gist :</label> <input type="text" id="gist-id" placeholder="Ex: a1b2c3d4...">
                 <label>Token GitHub :</label> <input type="password" id="github-token" placeholder="ghp_...">
                 <button class="btn-secondary" id="btn-setup" onclick="startGithubMode()">Connecter GitHub</button>
@@ -235,7 +239,6 @@
                     <textarea id="answer-input" placeholder="Écris ta réponse ici..." oninput="autoGrow(this)"></textarea>
                     <button class="btn-primary" id="btn-save" onclick="saveAnswer()">Sauvegarder dans mon journal</button>
                 </div>
-                <div id="history-container" class="history-container"></div>
             </div>
 
             <div id="view-memento" class="hidden">
@@ -254,14 +257,17 @@
                 </div>
 
                 <div class="timeline-section">
-                    <h3 class="timeline-main-title">Souvenirs Marquants</h3>
+                    <h2 class="section-title">Souvenirs Marquants</h2>
+                    <div class="search-bar-wrapper">
+                        <input type="search" id="search-timeline" class="search-input" placeholder="🔍 Rechercher un voyage, une personne..." oninput="filterTimeline()">
+                    </div>
                     <div id="timeline-content"></div>
                 </div>
             </div>
 
             <div id="view-journal" class="hidden">
                 <div class="journal-actions">
-                    <h2>Tes mémoires</h2>
+                    <h2 class="section-title" style="margin:0;">Tes mémoires</h2>
                     <button class="btn-secondary" style="width:auto; margin:0;" onclick="exportData()">Exporter (JSON)</button>
                 </div>
                 <div class="journal-filters" id="journal-filters">
@@ -767,6 +773,8 @@
         function setupGridDelegation() {
             const grid = document.getElementById('life-grid');
             const infoZone = document.getElementById('grid-hover-info');
+            const birthDate = new Date(state.birthdate);
+            const msPerWeek = 604800000;
 
             grid.addEventListener('mouseover', (e) => {
                 if (window.matchMedia("(max-width: 600px)").matches) return; 
@@ -804,11 +812,43 @@
             });
         }
 
+        // 🔍 FONCTION DE RECHERCHE DES ÉVÉNEMENTS
+        function filterTimeline() {
+            const query = document.getElementById('search-timeline').value.toLowerCase();
+            const groups = document.querySelectorAll('#timeline-content .month-group');
+
+            groups.forEach(group => {
+                let hasVisibleItem = false;
+                const items = group.querySelectorAll('.timeline-item');
+                
+                items.forEach(item => {
+                    const textContent = item.querySelector('.timeline-text').textContent.toLowerCase();
+                    if (textContent.includes(query)) {
+                        item.style.display = 'block';
+                        hasVisibleItem = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                if (hasVisibleItem) {
+                    group.style.display = 'block';
+                    if (query !== "") group.open = true; // Déplie auto si on cherche
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+
         function renderTimeline() {
             const tlContainer = document.getElementById('timeline-content');
             if(!tlContainer) return;
             tlContainer.innerHTML = '';
             
+            // On s'assure que la barre de recherche est vidée au re-render
+            const searchBar = document.getElementById('search-timeline');
+            if(searchBar) searchBar.value = '';
+
             if (!state.data.milestones || Object.keys(state.data.milestones).length === 0) {
                 tlContainer.innerHTML = '<p style="color:var(--text-light); font-style:italic; text-align:center;">Aucun événement enregistré.</p>';
                 return;
@@ -921,11 +961,17 @@
             grid.innerHTML = '';
             const fragment = document.createDocumentFragment();
             let currentWeekIndex = 0;
+            const birthYear = new Date(state.birthdate).getFullYear();
 
             for (let y = 0; y < 80; y++) {
                 const row = document.createElement('div');
                 row.className = 'year-row';
                 if (y > 0 && y % 5 === 0) row.style.marginTop = '6px';
+
+                const markerLeft = document.createElement('div');
+                markerLeft.className = 'year-marker left';
+                if ((y + 1) % 5 === 0) markerLeft.innerText = birthYear + y + 1;
+                row.appendChild(markerLeft);
 
                 for (let w = 0; w < 52; w++) {
                     const box = document.createElement('div');
@@ -945,10 +991,11 @@
                     currentWeekIndex++;
                 }
 
-                const marker = document.createElement('div');
-                marker.className = 'year-marker';
-                if ((y + 1) % 5 === 0) marker.innerText = (y + 1);
-                row.appendChild(marker);
+                const markerRight = document.createElement('div');
+                markerRight.className = 'year-marker right';
+                if ((y + 1) % 5 === 0) markerRight.innerText = (y + 1);
+                row.appendChild(markerRight);
+
                 fragment.appendChild(row);
             }
             grid.appendChild(fragment);
