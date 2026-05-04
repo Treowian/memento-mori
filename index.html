@@ -78,6 +78,7 @@
         .btn-today:hover { background: var(--text-color); color: var(--bg-color); }
 
         .memento-header { text-align: center; margin-bottom: 2rem; }
+        .memento-stats { font-size: 1.5rem; margin-bottom: 0.5rem; text-align: center;}
         .memento-quote { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
         
         .memento-actions { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; max-width: 800px; margin: 0 auto 0.5rem auto; flex-wrap: wrap; gap: 0.8rem; position: sticky; top: 0; z-index: 50; background: rgba(246, 239, 232, 0.95); padding: 10px 0; border-bottom: 1px dashed rgba(164, 176, 179, 0.3); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);}
@@ -157,21 +158,16 @@
 
         @media (max-width: 600px) {
             .container { padding: 1rem 0.2rem; } 
-            
             .year-row { gap: 1px; height: 5px; } 
             .life-grid { gap: 1px; padding-right: 0; } 
-            
             .week-box { width: 5px; height: 5px; pointer-events: none; } 
             .week-box:nth-child(27) { margin-right: 6px; } 
-            
             .year-marker { font-size: 0.6rem; }
             .year-marker.left { width: 24px; margin-right: 4px; }
             .year-marker.right { width: 12px; margin-left: 4px; }
-            
             .journal-filters { flex-direction: column; gap: 0.5rem; padding: 0 1rem;}
             .journal-actions, .journal-list { padding: 0 1rem; box-sizing: border-box;}
             .timeline-section { padding: 2rem 1rem; box-sizing: border-box;}
-            
             .memento-actions { flex-direction: column-reverse; align-items: flex-end; padding: 10px 1rem; }
             .grid-hover-info { width: 100%; align-items: flex-start; margin-top: 0.5rem; }
         }
@@ -764,6 +760,8 @@
         function setupGridDelegation() {
             const grid = document.getElementById('life-grid');
             const infoZone = document.getElementById('grid-hover-info');
+            const birthDate = new Date(state.birthdate);
+            const msPerWeek = 604800000;
 
             grid.addEventListener('mouseover', (e) => {
                 if (window.matchMedia("(max-width: 600px)").matches) return; 
@@ -908,17 +906,34 @@
         function renderMementoMori() {
             const birthDate = new Date(state.birthdate);
             const today = new Date();
+            today.setHours(23, 59, 59, 999);
             
+            // STATS TEXTE (Raisonnement absolu)
             const diffMs = today - birthDate;
             const weeksLived = Math.floor(diffMs / 604800000);
-            
             document.getElementById('memento-stats').innerText = `Tu as vécu ${weeksLived.toLocaleString('fr-FR')} semaines pleines.`;
+
+            // 🐛 CORRECTIF 1 : FIX DE LA DÉRIVE CALENDAIRE POUR LA GRILLE
+            const [by, bm, bd] = state.birthdate.split('-');
+            const bDate = new Date(by, bm-1, bd);
+            
+            let currentAge = today.getFullYear() - bDate.getFullYear();
+            const bDateThisYear = new Date(bDate);
+            bDateThisYear.setFullYear(today.getFullYear());
+            
+            if (today < bDateThisYear) {
+                currentAge--;
+                bDateThisYear.setFullYear(bDateThisYear.getFullYear() - 1);
+            }
+            
+            const daysSinceLastBday = Math.floor((today - bDateThisYear) / 86400000);
+            const weeksSinceLastBday = Math.floor(daysSinceLastBday / 7);
+            
+            // La limite de remplissage stricte
+            const maxFilledIndex = (currentAge * 52) + weeksSinceLastBday;
 
             window.currentMilestonesByWeek = {};
             if (state.data.milestones) {
-                const [by, bm, bd] = state.birthdate.split('-');
-                const bDate = new Date(by, bm-1, bd);
-                
                 for (const [dateStr, eventsArr] of Object.entries(state.data.milestones)) {
                     const [ey, em, ed] = dateStr.split('-');
                     const eDate = new Date(ey, em-1, ed);
@@ -948,19 +963,16 @@
             grid.innerHTML = '';
             const fragment = document.createDocumentFragment();
             let currentWeekIndex = 0;
+            const birthYear = new Date(state.birthdate).getFullYear();
 
             for (let y = 0; y < 80; y++) {
                 const row = document.createElement('div');
                 row.className = 'year-row';
                 if (y > 0 && y % 5 === 0) row.style.marginTop = '6px';
 
-                // 🐛 CORRECTIF : Le label de gauche reflète l'année calendaire exacte de la première bulle de la ligne
                 const markerLeft = document.createElement('div');
                 markerLeft.className = 'year-marker left';
-                if ((y + 1) % 5 === 0) {
-                    const firstBubbleDate = getApproxDateForWeek(currentWeekIndex, state.birthdate);
-                    markerLeft.innerText = firstBubbleDate.getFullYear();
-                }
+                if ((y + 1) % 5 === 0) markerLeft.innerText = birthYear + y + 1;
                 row.appendChild(markerLeft);
 
                 for (let w = 0; w < 52; w++) {
@@ -968,7 +980,7 @@
                     box.className = 'week-box';
                     box.setAttribute('data-index', currentWeekIndex);
 
-                    if (currentWeekIndex <= weeksLived) {
+                    if (currentWeekIndex <= maxFilledIndex) {
                         box.classList.add('past', 'lived');
                         if (window.currentMilestonesByWeek[currentWeekIndex]) {
                             box.classList.add('milestone');
@@ -1177,7 +1189,7 @@
                         titleLine.appendChild(strongYear); titleLine.appendChild(actionsDiv);
                         
                         const textContent = document.createElement('div');
-                        textContent.style.cssText = "font-family: var(--font-main); line-height: 1.6; font-size: 1.1rem; margin-top: 0.5rem; white-space: pre-wrap;";
+                        textContent.style.cssText = "font-family: var(--font-main); line-height: 1.5; margin-top: 0.5rem; white-space: pre-wrap;";
                         textContent.textContent = entry.yearsObj[year];
 
                         block.appendChild(titleLine);
