@@ -30,6 +30,7 @@
         body { background-color: var(--bg-color); color: var(--text-color); font-family: var(--font-main); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .container { max-width: 800px; width: 100%; padding: 2rem; box-sizing: border-box; }
 
+        /* 🖋️ UNIFICATION DES TITRES */
         .section-title { font-weight: normal; font-size: 1.8rem; text-align: center; margin-top: 0; margin-bottom: 2rem; font-family: var(--font-main); color: var(--text-color); }
 
         nav { width: 100%; display: flex; justify-content: center; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
@@ -77,7 +78,13 @@
         .btn-today { background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 12px; font-size: 0.75rem; padding: 0.3rem 0.8rem; cursor: pointer; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;}
         .btn-today:hover { background: var(--text-color); color: var(--bg-color); }
 
+        .history-container { max-width: 600px; margin: 0 auto 2rem auto; display: flex; flex-direction: column; gap: 1rem; }
+        .history-card { background: rgba(255, 255, 255, 0.4); padding: 1.5rem; border-radius: 4px; border-left: 3px solid var(--border-color); }
+        .history-year { font-family: var(--font-sans); color: var(--text-light); font-size: 0.85rem; margin-bottom: 0.5rem; font-weight: bold; display: block; }
+        .history-text { margin: 0; line-height: 1.5; font-size: 1.1rem; white-space: pre-wrap; }
+
         .memento-header { text-align: center; margin-bottom: 2rem; }
+        .memento-stats { font-size: 1.5rem; margin-bottom: 0.5rem; text-align: center;}
         .memento-quote { font-style: italic; color: var(--text-light); font-size: 1.1rem; }
         
         .memento-actions { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; max-width: 800px; margin: 0 auto 0.5rem auto; flex-wrap: wrap; gap: 0.8rem; position: sticky; top: 0; z-index: 50; background: rgba(246, 239, 232, 0.95); padding: 10px 0; border-bottom: 1px dashed rgba(164, 176, 179, 0.3); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);}
@@ -157,21 +164,16 @@
 
         @media (max-width: 600px) {
             .container { padding: 1rem 0.2rem; } 
-            
             .year-row { gap: 1px; height: 5px; } 
             .life-grid { gap: 1px; padding-right: 0; } 
-            
             .week-box { width: 5px; height: 5px; pointer-events: none; } 
             .week-box:nth-child(27) { margin-right: 6px; } 
-            
             .year-marker { font-size: 0.6rem; }
             .year-marker.left { width: 24px; margin-right: 4px; }
             .year-marker.right { width: 12px; margin-left: 4px; }
-            
             .journal-filters { flex-direction: column; gap: 0.5rem; padding: 0 1rem;}
             .journal-actions, .journal-list { padding: 0 1rem; box-sizing: border-box;}
             .timeline-section { padding: 2rem 1rem; box-sizing: border-box;}
-            
             .memento-actions { flex-direction: column-reverse; align-items: flex-end; padding: 10px 1rem; }
             .grid-hover-info { width: 100%; align-items: flex-start; margin-top: 0.5rem; }
         }
@@ -272,8 +274,18 @@
         <div id="milestone-modal" class="modal-overlay hidden">
             <div class="modal-content">
                 <h3 class="modal-title">Gérer les événements</h3>
-                <label class="modal-label">Date</label>
-                <input type="date" id="milestone-date" class="modal-input" onchange="refreshMilestoneList()">
+                
+                <div style="display: flex; gap: 1rem;">
+                    <div style="flex: 1;">
+                        <label class="modal-label">Début</label>
+                        <input type="date" id="milestone-date" class="modal-input" onchange="refreshMilestoneList()">
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="modal-label">Fin (Optionnel)</label>
+                        <input type="date" id="milestone-end-date" class="modal-input">
+                    </div>
+                </div>
+
                 <label class="modal-label">Souvenir marquant</label>
                 <input type="text" id="milestone-input" class="modal-input" placeholder="Ex: Obtention du diplôme..." maxlength="50">
                 <div class="modal-buttons">
@@ -339,6 +351,29 @@
             let dayOfYear = Math.floor(diff / 86400000);
             if (tempDate > new Date(2024, 1, 28)) dayOfYear -= 1; 
             return questions[dayOfYear - 1] || "Question introuvable.";
+        }
+
+        function getGridWeekIndex(dateStr, birthdateStr) {
+            if (!dateStr || !birthdateStr) return -1;
+            const [ey, em, ed] = dateStr.split('-');
+            const eDate = new Date(ey, em-1, ed);
+            const [by, bm, bd] = birthdateStr.split('-');
+            const bDate = new Date(by, bm-1, bd);
+
+            let yearDiff = eDate.getFullYear() - bDate.getFullYear();
+            const bDateInEventYear = new Date(bDate);
+            bDateInEventYear.setFullYear(eDate.getFullYear());
+
+            if (eDate < bDateInEventYear) {
+                yearDiff--;
+                bDateInEventYear.setFullYear(bDateInEventYear.getFullYear() - 1);
+            }
+
+            const daysSinceBirthdayThatYear = Math.floor((eDate - bDateInEventYear) / 86400000);
+            let weekInYear = Math.floor(daysSinceBirthdayThatYear / 7);
+            if (weekInYear > 51) weekInYear = 51; 
+
+            return (yearDiff * 52) + weekInYear;
         }
 
         function getApproxDateForWeek(idx, birthdateStr) {
@@ -658,6 +693,7 @@
             dateInput.setAttribute('min', state.birthdate);
             
             dateInput.value = dateStr;
+            document.getElementById('milestone-end-date').value = ""; 
             document.getElementById('milestone-input').value = "";
             refreshMilestoneList();
         }
@@ -665,18 +701,26 @@
         function refreshMilestoneList() {
             editingMilestoneIdx = null; 
             document.getElementById('btn-save-milestone').innerText = "Ajouter";
+            document.getElementById('milestone-end-date').value = "";
             
             const dateStr = document.getElementById('milestone-date').value;
             const listContainer = document.getElementById('milestone-list');
             listContainer.innerHTML = '';
             
             if (state.data.milestones[dateStr] && state.data.milestones[dateStr].length > 0) {
-                state.data.milestones[dateStr].forEach((text, idx) => {
+                state.data.milestones[dateStr].forEach((eventData, idx) => {
+                    const isObj = typeof eventData === 'object';
+                    const text = isObj ? eventData.text : eventData;
+                    
                     const item = document.createElement('div');
                     item.className = 'milestone-item';
                     
                     const spanText = document.createElement('span');
                     spanText.textContent = text;
+                    if (isObj && eventData.endDate && eventData.endDate !== dateStr) {
+                        const eD = new Date(eventData.endDate);
+                        spanText.textContent += ` (jusqu'au ${eD.getDate()}/${eD.getMonth()+1})`;
+                    }
                     
                     const actionsDiv = document.createElement('div');
                     actionsDiv.className = 'btn-icon-group';
@@ -705,7 +749,14 @@
 
         function editMilestone(dateStr, idx) {
             editingMilestoneIdx = idx;
-            document.getElementById('milestone-input').value = state.data.milestones[dateStr][idx];
+            const eventData = state.data.milestones[dateStr][idx];
+            
+            const isObj = typeof eventData === 'object';
+            const text = isObj ? eventData.text : eventData;
+            const endDate = isObj && eventData.endDate ? eventData.endDate : "";
+            
+            document.getElementById('milestone-input').value = text;
+            document.getElementById('milestone-end-date').value = endDate;
             document.getElementById('btn-save-milestone').innerText = "Mettre à jour";
         }
 
@@ -716,35 +767,35 @@
 
         function saveMilestone() {
             const dateStr = document.getElementById('milestone-date').value;
+            const endStr = document.getElementById('milestone-end-date').value;
             const text = document.getElementById('milestone-input').value.trim();
             
             if (!dateStr || !text) return;
             
-            const [ey, em, ed] = dateStr.split('-');
-            const [by, bm, bd] = state.birthdate.split('-');
-            const selectedDate = new Date(ey, em-1, ed);
-            const birthDate = new Date(by, bm-1, bd);
+            const selectedDate = new Date(dateStr);
+            const birthDate = new Date(state.birthdate);
             const today = new Date();
             today.setHours(23,59,59,999);
             
-            if (selectedDate > today) {
-                alert("Impossible de prévoir l'avenir ! Reste dans le passé ou le présent.");
-                return;
-            }
-            if (selectedDate < birthDate) {
-                alert("Tu ne peux pas ajouter d'événement avant ta naissance !");
-                return;
-            }
+            if (selectedDate > today) return alert("Impossible de prévoir l'avenir ! Reste dans le passé ou le présent.");
+            if (selectedDate < birthDate) return alert("Tu ne peux pas ajouter d'événement avant ta naissance !");
+            if (endStr && new Date(endStr) < selectedDate) return alert("La date de fin doit être après la date de début.");
 
             if (!state.data.milestones[dateStr]) state.data.milestones[dateStr] = [];
             
+            let eventObj = text;
+            if (endStr && endStr > dateStr) {
+                eventObj = { text: text, endDate: endStr };
+            }
+            
             if (editingMilestoneIdx !== null) {
-                state.data.milestones[dateStr][editingMilestoneIdx] = text;
+                state.data.milestones[dateStr][editingMilestoneIdx] = eventObj;
             } else {
-                state.data.milestones[dateStr].push(text);
+                state.data.milestones[dateStr].push(eventObj);
             }
             
             document.getElementById('milestone-input').value = ""; 
+            document.getElementById('milestone-end-date').value = "";
             refreshMilestoneList();
             renderMementoMori();
             
@@ -829,122 +880,125 @@
         }
 
         function renderTimeline() {
-    const tlContainer = document.getElementById('timeline-content');
-    if(!tlContainer) return;
-    tlContainer.innerHTML = '';
-    
-    const searchBar = document.getElementById('search-timeline');
-    if(searchBar) searchBar.value = '';
-
-    if (!state.data.milestones || Object.keys(state.data.milestones).length === 0) {
-        tlContainer.innerHTML = '<p style="color:var(--text-light); font-style:italic; text-align:center;">Aucun événement enregistré.</p>';
-        return;
-    }
-
-    const eventsByYear = {};
-    
-    // CORRECTION 1 : Tri alphabétique direct sur des chaînes YYYY-MM-DD (plus rapide et safe)
-    const sortedDates = Object.keys(state.data.milestones).sort((a, b) => b.localeCompare(a));
-    
-    sortedDates.forEach(dateStr => {
-        const year = dateStr.split('-')[0];
-        if (!eventsByYear[year]) eventsByYear[year] = [];
-        eventsByYear[year].push(dateStr);
-    });
-
-    const currentYearStr = new Date().getFullYear().toString();
-
-    Object.keys(eventsByYear).sort((a,b) => b-a).forEach(year => {
-        const details = document.createElement('details');
-        details.className = 'month-group'; 
-        if (year === currentYearStr) details.open = true;
-
-        const summary = document.createElement('summary');
-        summary.className = 'month-title';
-        summary.innerHTML = `${year} <span class="month-icon">▼</span>`;
-        details.appendChild(summary);
-
-        const yearContent = document.createElement('div');
-        yearContent.className = 'month-content';
-
-        eventsByYear[year].forEach(dateStr => {
-            // CORRECTION 2 : Parsing manuel sécurisé en heure locale
-            const [y, m, day] = dateStr.split('-').map(Number);
-            const d = new Date(y, m - 1, day);
-            const displayDate = `${d.getDate()} ${moisNoms[d.getMonth()]}`;
+            const tlContainer = document.getElementById('timeline-content');
+            if(!tlContainer) return;
+            tlContainer.innerHTML = '';
             
-            state.data.milestones[dateStr].forEach((text, idx) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'timeline-item';
-                
-                const dateSpan = document.createElement('div');
-                dateSpan.className = 'timeline-date';
-                dateSpan.textContent = displayDate;
-                
-                const textSpan = document.createElement('div');
-                textSpan.className = 'timeline-text';
-                textSpan.textContent = text; // 💡 Note : textContent protège bien des injections XSS
-                
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'timeline-actions';
-                
-                const actionBtn = document.createElement('button');
-                actionBtn.className = 'action-link';
-                actionBtn.style.marginLeft = '0';
-                actionBtn.textContent = 'Gérer ce jour';
-                actionBtn.onclick = () => openMilestoneModalWithDate(dateStr);
-                
-                actionsDiv.appendChild(actionBtn);
-                
-                itemDiv.appendChild(dateSpan);
-                itemDiv.appendChild(textSpan);
-                itemDiv.appendChild(actionsDiv);
-                
-                yearContent.appendChild(itemDiv);
-            });
-        });
+            const searchBar = document.getElementById('search-timeline');
+            if(searchBar) searchBar.value = '';
 
-        details.appendChild(yearContent);
-        tlContainer.appendChild(details);
-    });
-}
+            if (!state.data.milestones || Object.keys(state.data.milestones).length === 0) {
+                tlContainer.innerHTML = '<p style="color:var(--text-light); font-style:italic; text-align:center;">Aucun événement enregistré.</p>';
+                return;
+            }
+
+            const eventsByYear = {};
+            const sortedDates = Object.keys(state.data.milestones).sort((a, b) => new Date(b) - new Date(a));
+            
+            sortedDates.forEach(dateStr => {
+                const year = dateStr.split('-')[0];
+                if (!eventsByYear[year]) eventsByYear[year] = [];
+                eventsByYear[year].push(dateStr);
+            });
+
+            const currentYearStr = new Date().getFullYear().toString();
+
+            Object.keys(eventsByYear).sort((a,b) => b-a).forEach(year => {
+                const details = document.createElement('details');
+                details.className = 'month-group'; 
+                if (year === currentYearStr) details.open = true;
+
+                const summary = document.createElement('summary');
+                summary.className = 'month-title';
+                summary.innerHTML = `${year} <span class="month-icon">▼</span>`;
+                details.appendChild(summary);
+
+                const yearContent = document.createElement('div');
+                yearContent.className = 'month-content';
+
+                eventsByYear[year].forEach(dateStr => {
+                    const d = new Date(dateStr);
+                    
+                    state.data.milestones[dateStr].forEach((eventData) => {
+                        const isObj = typeof eventData === 'object';
+                        const text = isObj ? eventData.text : eventData;
+                        const endDateStr = isObj ? eventData.endDate : null;
+                        
+                        let displayDate = `${d.getDate()} ${moisNoms[d.getMonth()]}`;
+                        if (endDateStr && endDateStr !== dateStr) {
+                            const ed = new Date(endDateStr);
+                            displayDate += ` au ${ed.getDate()} ${moisNoms[ed.getMonth()]}`;
+                            if (d.getFullYear() !== ed.getFullYear()) {
+                                displayDate += ` ${ed.getFullYear()}`;
+                            }
+                        }
+                        
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'timeline-item';
+                        
+                        const dateSpan = document.createElement('div');
+                        dateSpan.className = 'timeline-date';
+                        dateSpan.textContent = displayDate;
+                        
+                        const textSpan = document.createElement('div');
+                        textSpan.className = 'timeline-text';
+                        textSpan.textContent = text;
+                        
+                        const actionsDiv = document.createElement('div');
+                        actionsDiv.className = 'timeline-actions';
+                        
+                        const actionBtn = document.createElement('button');
+                        actionBtn.className = 'action-link';
+                        actionBtn.style.marginLeft = '0';
+                        actionBtn.textContent = 'Gérer ce jour';
+                        actionBtn.onclick = () => openMilestoneModalWithDate(dateStr);
+                        
+                        actionsDiv.appendChild(actionBtn);
+                        
+                        itemDiv.appendChild(dateSpan);
+                        itemDiv.appendChild(textSpan);
+                        itemDiv.appendChild(actionsDiv);
+                        
+                        yearContent.appendChild(itemDiv);
+                    });
+                });
+
+                details.appendChild(yearContent);
+                tlContainer.appendChild(details);
+            });
+        }
 
         function renderMementoMori() {
-            const birthDate = new Date(state.birthdate);
+            if (!state.birthdate) return;
             const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
             
-            const diffMs = today - birthDate;
+            const diffMs = today - new Date(state.birthdate);
             const weeksLived = Math.floor(diffMs / 604800000);
             
             document.getElementById('memento-stats').innerText = `Tu as vécu ${weeksLived.toLocaleString('fr-FR')} semaines pleines.`;
 
+            // 🐛 CORRECTIF 3 : Utilisation de getGridWeekIndex pour placer chaque événement PARFAITEMENT sur la grille sans dérive.
+            const maxFilledIndex = getGridWeekIndex(todayStr, state.birthdate);
+
             window.currentMilestonesByWeek = {};
             if (state.data.milestones) {
-                const [by, bm, bd] = state.birthdate.split('-');
-                const bDate = new Date(by, bm-1, bd);
-                
                 for (const [dateStr, eventsArr] of Object.entries(state.data.milestones)) {
-                    const [ey, em, ed] = dateStr.split('-');
-                    const eDate = new Date(ey, em-1, ed);
-                    
-                    let yearDiff = eDate.getFullYear() - bDate.getFullYear();
-                    const bDateInEventYear = new Date(bDate);
-                    bDateInEventYear.setFullYear(eDate.getFullYear());
-                    
-                    if (eDate < bDateInEventYear) {
-                        yearDiff--;
-                        bDateInEventYear.setFullYear(bDateInEventYear.getFullYear() - 1);
-                    }
-                    
-                    const daysSinceBirthdayThatYear = Math.floor((eDate - bDateInEventYear) / 86400000);
-                    const weekInYear = Math.floor(daysSinceBirthdayThatYear / 7);
-                    
-                    const weekIdx = (yearDiff * 52) + weekInYear;
-                    
-                    if (weekIdx >= 0) {
-                        if (!window.currentMilestonesByWeek[weekIdx]) window.currentMilestonesByWeek[weekIdx] = [];
-                        eventsArr.forEach(e => window.currentMilestonesByWeek[weekIdx].push({ date: dateStr, text: e }));
-                    }
+                    eventsArr.forEach(ev => {
+                        const isObj = typeof ev === 'object';
+                        const text = isObj ? ev.text : ev;
+                        const endDateStr = isObj && ev.endDate ? ev.endDate : dateStr;
+
+                        const startIdx = getGridWeekIndex(dateStr, state.birthdate);
+                        const endIdx = getGridWeekIndex(endDateStr, state.birthdate);
+
+                        for (let i = startIdx; i <= endIdx; i++) {
+                            if (i >= 0 && i < 4160) {
+                                if (!window.currentMilestonesByWeek[i]) window.currentMilestonesByWeek[i] = [];
+                                window.currentMilestonesByWeek[i].push({ date: dateStr, text: text });
+                            }
+                        }
+                    });
                 }
             }
 
@@ -952,13 +1006,13 @@
             grid.innerHTML = '';
             const fragment = document.createDocumentFragment();
             let currentWeekIndex = 0;
+            const birthYear = new Date(state.birthdate).getFullYear();
 
             for (let y = 0; y < 80; y++) {
                 const row = document.createElement('div');
                 row.className = 'year-row';
                 if (y > 0 && y % 5 === 0) row.style.marginTop = '6px';
 
-                // 🐛 CORRECTIF : Le label de gauche reflète l'année calendaire exacte de la première bulle de la ligne
                 const markerLeft = document.createElement('div');
                 markerLeft.className = 'year-marker left';
                 if ((y + 1) % 5 === 0) {
@@ -972,7 +1026,7 @@
                     box.className = 'week-box';
                     box.setAttribute('data-index', currentWeekIndex);
 
-                    if (currentWeekIndex <= weeksLived) {
+                    if (currentWeekIndex <= maxFilledIndex) {
                         box.classList.add('past', 'lived');
                         if (window.currentMilestonesByWeek[currentWeekIndex]) {
                             box.classList.add('milestone');
