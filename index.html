@@ -880,93 +880,85 @@
         }
 
         function renderTimeline() {
-            const tlContainer = document.getElementById('timeline-content');
-            if(!tlContainer) return;
-            tlContainer.innerHTML = '';
+    const tlContainer = document.getElementById('timeline-content');
+    if(!tlContainer) return;
+    tlContainer.innerHTML = '';
+    
+    const searchBar = document.getElementById('search-timeline');
+    if(searchBar) searchBar.value = '';
+
+    if (!state.data.milestones || Object.keys(state.data.milestones).length === 0) {
+        tlContainer.innerHTML = '<p style="color:var(--text-light); font-style:italic; text-align:center;">Aucun événement enregistré.</p>';
+        return;
+    }
+
+    const eventsByYear = {};
+    
+    // CORRECTION 1 : Tri alphabétique direct sur des chaînes YYYY-MM-DD (plus rapide et safe)
+    const sortedDates = Object.keys(state.data.milestones).sort((a, b) => b.localeCompare(a));
+    
+    sortedDates.forEach(dateStr => {
+        const year = dateStr.split('-')[0];
+        if (!eventsByYear[year]) eventsByYear[year] = [];
+        eventsByYear[year].push(dateStr);
+    });
+
+    const currentYearStr = new Date().getFullYear().toString();
+
+    Object.keys(eventsByYear).sort((a,b) => b-a).forEach(year => {
+        const details = document.createElement('details');
+        details.className = 'month-group'; 
+        if (year === currentYearStr) details.open = true;
+
+        const summary = document.createElement('summary');
+        summary.className = 'month-title';
+        summary.innerHTML = `${year} <span class="month-icon">▼</span>`;
+        details.appendChild(summary);
+
+        const yearContent = document.createElement('div');
+        yearContent.className = 'month-content';
+
+        eventsByYear[year].forEach(dateStr => {
+            // CORRECTION 2 : Parsing manuel sécurisé en heure locale
+            const [y, m, day] = dateStr.split('-').map(Number);
+            const d = new Date(y, m - 1, day);
+            const displayDate = `${d.getDate()} ${moisNoms[d.getMonth()]}`;
             
-            const searchBar = document.getElementById('search-timeline');
-            if(searchBar) searchBar.value = '';
-
-            if (!state.data.milestones || Object.keys(state.data.milestones).length === 0) {
-                tlContainer.innerHTML = '<p style="color:var(--text-light); font-style:italic; text-align:center;">Aucun événement enregistré.</p>';
-                return;
-            }
-
-            const eventsByYear = {};
-            const sortedDates = Object.keys(state.data.milestones).sort((a, b) => new Date(b) - new Date(a));
-            
-            sortedDates.forEach(dateStr => {
-                const year = dateStr.split('-')[0];
-                if (!eventsByYear[year]) eventsByYear[year] = [];
-                eventsByYear[year].push(dateStr);
+            state.data.milestones[dateStr].forEach((text, idx) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'timeline-item';
+                
+                const dateSpan = document.createElement('div');
+                dateSpan.className = 'timeline-date';
+                dateSpan.textContent = displayDate;
+                
+                const textSpan = document.createElement('div');
+                textSpan.className = 'timeline-text';
+                textSpan.textContent = text; // 💡 Note : textContent protège bien des injections XSS
+                
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'timeline-actions';
+                
+                const actionBtn = document.createElement('button');
+                actionBtn.className = 'action-link';
+                actionBtn.style.marginLeft = '0';
+                actionBtn.textContent = 'Gérer ce jour';
+                actionBtn.onclick = () => openMilestoneModalWithDate(dateStr);
+                
+                actionsDiv.appendChild(actionBtn);
+                
+                itemDiv.appendChild(dateSpan);
+                itemDiv.appendChild(textSpan);
+                itemDiv.appendChild(actionsDiv);
+                
+                yearContent.appendChild(itemDiv);
             });
+        });
 
-            const currentYearStr = new Date().getFullYear().toString();
-
-            Object.keys(eventsByYear).sort((a,b) => b-a).forEach(year => {
-                const details = document.createElement('details');
-                details.className = 'month-group'; 
-                if (year === currentYearStr) details.open = true;
-
-                const summary = document.createElement('summary');
-                summary.className = 'month-title';
-                summary.innerHTML = `${year} <span class="month-icon">▼</span>`;
-                details.appendChild(summary);
-
-                const yearContent = document.createElement('div');
-                yearContent.className = 'month-content';
-
-                eventsByYear[year].forEach(dateStr => {
-                    const d = new Date(dateStr);
-                    
-                    state.data.milestones[dateStr].forEach((eventData) => {
-                        const isObj = typeof eventData === 'object';
-                        const text = isObj ? eventData.text : eventData;
-                        const endDateStr = isObj ? eventData.endDate : null;
-                        
-                        let displayDate = `${d.getDate()} ${moisNoms[d.getMonth()]}`;
-                        if (endDateStr && endDateStr !== dateStr) {
-                            const ed = new Date(endDateStr);
-                            displayDate += ` au ${ed.getDate()} ${moisNoms[ed.getMonth()]}`;
-                            if (d.getFullYear() !== ed.getFullYear()) {
-                                displayDate += ` ${ed.getFullYear()}`;
-                            }
-                        }
-                        
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = 'timeline-item';
-                        
-                        const dateSpan = document.createElement('div');
-                        dateSpan.className = 'timeline-date';
-                        dateSpan.textContent = displayDate;
-                        
-                        const textSpan = document.createElement('div');
-                        textSpan.className = 'timeline-text';
-                        textSpan.textContent = text;
-                        
-                        const actionsDiv = document.createElement('div');
-                        actionsDiv.className = 'timeline-actions';
-                        
-                        const actionBtn = document.createElement('button');
-                        actionBtn.className = 'action-link';
-                        actionBtn.style.marginLeft = '0';
-                        actionBtn.textContent = 'Gérer ce jour';
-                        actionBtn.onclick = () => openMilestoneModalWithDate(dateStr);
-                        
-                        actionsDiv.appendChild(actionBtn);
-                        
-                        itemDiv.appendChild(dateSpan);
-                        itemDiv.appendChild(textSpan);
-                        itemDiv.appendChild(actionsDiv);
-                        
-                        yearContent.appendChild(itemDiv);
-                    });
-                });
-
-                details.appendChild(yearContent);
-                tlContainer.appendChild(details);
-            });
-        }
+        details.appendChild(yearContent);
+        tlContainer.appendChild(details);
+    });
+}
 
         function renderMementoMori() {
             if (!state.birthdate) return;
