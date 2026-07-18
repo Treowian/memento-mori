@@ -1256,6 +1256,54 @@
             dlAnchorElem.click();
         }
 
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (typeof importedData !== 'object' || importedData === null) {
+                        throw new Error("Le format du fichier est invalide.");
+                    }
+                    if (!importedData.milestones) {
+                        importedData.milestones = {};
+                    }
+
+                    if (!confirm("⚠️ Attention : L'importation va écraser tes données actuelles. Veux-tu continuer ?")) {
+                        event.target.value = ''; 
+                        return;
+                    }
+
+                    state.data = importedData;
+                    
+                    if (state.mode === 'github') {
+                        pushGistData();
+                    } else {
+                        saveLocalData();
+                    }
+
+                    renderMementoMori();
+                    updateJournalFilters();
+                    renderJournal();
+                    updateDisplay();
+                    
+                    alert("✅ Données restaurées avec succès !");
+                    
+                } catch (error) {
+                    console.error("Erreur d'importation:", error);
+                    alert("❌ Échec de l'importation. Le fichier JSON est corrompu ou illisible.");
+                }
+                
+                event.target.value = ''; 
+            };
+            
+            reader.readAsText(file);
+        }
+        
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch((e) => console.log('SW Error:', e));
