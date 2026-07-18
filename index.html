@@ -259,17 +259,22 @@
             </div>
 
             <div id="view-journal" class="hidden">
-                <div class="journal-actions">
-                    <h2 class="section-title" style="margin:0;">Tes mémoires</h2>
-                    <button class="btn-secondary" style="width:auto; margin:0;" onclick="exportData()">Exporter (JSON)</button>
-                </div>
-                <div class="journal-filters" id="journal-filters">
-                    <select id="filter-month" onchange="renderJournal()"><option value="all">Tous les mois</option></select>
-                    <select id="filter-year" onchange="renderJournal()"><option value="all">Toutes les années</option></select>
-                </div>
-                <div id="journal-content" class="journal-list"></div>
-            </div>
+    <div class="journal-actions">
+        <h2 class="section-title" style="margin:0;">Tes mémoires</h2>
+        <!-- Conteneur flex pour aligner proprement les boutons sur mobile et desktop -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
+            <button class="btn-secondary" style="width:auto; margin:0;" onclick="exportData()">Exporter (JSON)</button>
+            <button class="btn-secondary" style="width:auto; margin:0;" onclick="document.getElementById('import-file').click()">Importer</button>
+            <!-- Input file natif masqué -->
+            <input type="file" id="import-file" accept=".json" class="hidden" onchange="importData(event)">
         </div>
+    </div>
+    <div class="journal-filters" id="journal-filters">
+        <select id="filter-month" onchange="renderJournal()"><option value="all">Tous les mois</option></select>
+        <select id="filter-year" onchange="renderJournal()"><option value="all">Toutes les années</option></select>
+    </div>
+    <div id="journal-content" class="journal-list"></div>
+</div>
         
         <div id="milestone-modal" class="modal-overlay hidden">
             <div class="modal-content">
