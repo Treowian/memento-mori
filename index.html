@@ -305,8 +305,9 @@
                     </div>
                 </div>
 
-                <<label class="modal-label">Souvenir marquant</label>
-<textarea id="milestone-input" class="modal-input" placeholder="Ex: Obtention du diplôme..." oninput="autoGrow(this)" style="min-height: 40px; overflow-y: hidden;"></textarea>                <div class="modal-buttons">
+                <label class="modal-label">Souvenir marquant</label>
+<textarea id="milestone-input" class="modal-input" placeholder="Ex: Obtention du diplôme..." style="height: 120px; overflow-y: auto;"></textarea>
+               <div class="modal-buttons">
                     <button class="btn-secondary" style="margin-top:0;" onclick="closeMilestoneModal()">Fermer</button>
                     <button class="btn-primary" id="btn-save-milestone" style="margin-top:0;" onclick="saveMilestone()">Ajouter</button>
                 </div>
@@ -783,8 +784,6 @@ function autoGrow(element) {
     document.getElementById('milestone-end-date').value = endDate;
     document.getElementById('btn-save-milestone').innerText = "Mettre à jour";
     
-    // 3. On force le redimensionnement maintenant qu'il contient le texte
-    autoGrow(inputField);
 }
 
         function closeMilestoneModal() {
