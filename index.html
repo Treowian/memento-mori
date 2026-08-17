@@ -451,28 +451,54 @@
         }
 
         async function fetchGistData() {
-            const btn = document.getElementById('btn-setup');
-            const errorDiv = document.getElementById('error-msg');
-            btn.innerText = "Connexion en cours..."; errorDiv.style.display = 'none';
-            try {
-                const response = await fetch(`https://api.github.com/gists/${state.gistId}`, { headers: { 'Authorization': `token ${state.token}` } });
-                if (!response.ok) throw new Error("Erreur Gist API");
-                const gist = await response.json();
-                if (gist.files[GIST_FILENAME] && gist.files[GIST_FILENAME].content) {
-                    const content = gist.files[GIST_FILENAME].content;
-                    state.data = content.trim() ? JSON.parse(content) : { milestones: {} };
-                } else { state.data = { milestones: {} }; }
-                
-                if (!state.data.milestones) state.data.milestones = {};
-                migrateOldMilestones();
-                launchApp();
-            } catch (e) {
-                console.error(e);
-                errorDiv.innerText = "Erreur. Vérifie ton Token et ton ID de Gist.";
-                errorDiv.style.display = 'block'; btn.innerText = "Connecter GitHub";
-                localStorage.removeItem('mm_mode'); state.mode = null;
-            }
+    const btn = document.getElementById('btn-setup');
+    const errorDiv = document.getElementById('error-msg');
+    
+    if(btn) { btn.innerText = "Connexion en cours..."; }
+    if(errorDiv) { errorDiv.style.display = 'none'; }
+    
+    try {
+        const response = await fetch(`https://api.github.com/gists/${state.gistId}`, { headers: { 'Authorization': `token ${state.token}` } });
+        
+        // Si les identifiants sont VRAIMENT mauvais (Erreur 401 ou 403)
+        if (response.status === 401 || response.status === 403) {
+            throw new Error("UNAUTHORIZED");
         }
+        
+        if (!response.ok) throw new Error("NETWORK_OR_API_ERROR");
+        
+        const gist = await response.json();
+        if (gist.files[GIST_FILENAME] && gist.files[GIST_FILENAME].content) {
+            const content = gist.files[GIST_FILENAME].content;
+            state.data = content.trim() ? JSON.parse(content) : { milestones: {} };
+        } else { 
+            state.data = { milestones: {} }; 
+        }
+        
+        if (!state.data.milestones) state.data.milestones = {};
+        migrateOldMilestones();
+        launchApp();
+
+    } catch (e) {
+        console.error(e);
+        
+        if (e.message === "UNAUTHORIZED") {
+            // Le token est invalide, on force la déconnexion
+            if(errorDiv) {
+                errorDiv.innerText = "Erreur. Ton Token ou ID de Gist est invalide.";
+                errorDiv.style.display = 'block'; 
+            }
+            if(btn) { btn.innerText = "Connecter GitHub"; }
+            localStorage.removeItem('mm_mode'); 
+            state.mode = null;
+        } else {
+            // Pas de réseau ou erreur serveur : Mode défensif (Hors-ligne)
+            console.warn("Réseau indisponible. Basculement sur les données locales.");
+            loadLocalData();
+            launchApp();
+        }
+    }
+}
         
         function migrateOldMilestones() {
             let migrated = false;
